@@ -35,6 +35,7 @@ public class Exercise1 {
 	public void sortPersonsByAgeUsingArraysSortAnonymousComparator() {
 		Person[] persons = getPersons();
 		
+		Arrays.sort(persons, Comparator.comparingInt(Person::getAge));
 		// TODO использовать Arrays.sort
 		
 		assertArrayEquals(new Person[]{new Person("Иван", "Мельников", 20),
@@ -46,6 +47,7 @@ public class Exercise1 {
 	@Test
 	public void sortPersonsByLastNameThenFirstNameUsingArraysSortAnonymousComparator() {
 		Person[] persons = getPersons();
+		
 		
 		// TODO использовать Arrays.sort
 		
