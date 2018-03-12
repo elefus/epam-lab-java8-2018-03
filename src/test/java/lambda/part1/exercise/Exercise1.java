@@ -30,7 +30,7 @@ public class Exercise1 {
 									   new Person("Николай", "Зимов", 30),
 									   new Person("Алексей", "Доренко", 40),
 									   new Person("Артем", "Зимов", 45)}, persons);
-		Arrays.parallelSort(persons, new PersonAgeComarator());
+		Arrays.parallelSort(persons);
 	}
 	
 	@Test
@@ -50,15 +50,15 @@ public class Exercise1 {
 	public void sortPersonsByLastNameThenFirstNameUsingArraysSortAnonymousComparator() {
 		Person[] persons = getPersons();
 		
-		class LastFirstPersonNameComparator implements Comparator<Person> {
-			
+		
+		Arrays.sort(persons, new Comparator<Person>() {
 			@Override
 			public int compare(Person o1, Person o2) {
-				return o1.getLastName().compareTo(o2.getLastName());
+				return o1.getLastName().compareTo(o2.getLastName()) == 0 ?
+					   o1.getFirstName().compareTo(o2.getFirstName()) :
+					   o1.getLastName().compareTo(o2.getLastName());
 			}
-		}
-		
-		Arrays.sort(persons, new LastFirstPersonNameComparator());
+		});
 		// TODO использовать Arrays.sort
 		
 		assertArrayEquals(
