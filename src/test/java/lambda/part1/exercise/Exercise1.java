@@ -1,6 +1,7 @@
 package lambda.part1.exercise;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.Test;
@@ -50,13 +51,11 @@ public class Exercise1 {
 	public void sortPersonsByLastNameThenFirstNameUsingArraysSortAnonymousComparator() {
 		Person[] persons = getPersons();
 		
-		
 		Arrays.sort(persons, new Comparator<Person>() {
 			@Override
 			public int compare(Person o1, Person o2) {
-				return o1.getLastName().compareTo(o2.getLastName()) == 0 ?
-					   o1.getFirstName().compareTo(o2.getFirstName()) :
-					   o1.getLastName().compareTo(o2.getLastName());
+				return o1.getLastName().compareTo(o2.getLastName()) == 0 ? 0 :
+					   o1.getFirstName().compareTo(o2.getFirstName());
 			}
 		});
 		// TODO использовать Arrays.sort
@@ -71,6 +70,14 @@ public class Exercise1 {
 	public void findFirstWithAge30UsingGuavaPredicate() {
 		List<Person> persons = Arrays.asList(getPersons());
 		
+		Optional<Person> personOptional;
+		
+		if ((personOptional =
+					 FluentIterable.from(persons).firstMatch(input -> (input.getAge() == 30)))
+				.isPresent()) {
+			System.out.println(personOptional.get());
+			assertEquals(new Person("Алексей", "Доренко", 40), personOptional.get());
+		}
 		// TODO использовать FluentIterable
 		Person person = null;
 		
