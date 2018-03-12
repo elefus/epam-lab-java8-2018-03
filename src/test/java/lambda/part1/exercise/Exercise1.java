@@ -78,9 +78,9 @@ public class Exercise1 {
     public void findFirstWithAge30UsingGuavaPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
 
-        Predicate<Person> isFirst30AgeChecker = new Predicate<Person>() {
+        com.google.common.base.Predicate<Person> isFirst30AgeChecker = new com.google.common.base.Predicate<Person>() {
             @Override
-            public boolean test(Person person) {
+            public boolean apply(Person person) {
                 return person.getAge() == 30;
             }
         };
