@@ -8,7 +8,7 @@ public class Example7 {
     @FunctionalInterface
     private interface Usable {
 
-        void use();
+        void run();
     }
 
     private void perform(Runnable runnable) {
@@ -18,7 +18,7 @@ public class Example7 {
 
     private void perform(Usable usable) {
         System.out.println("Usable");
-        usable.use();
+        usable.run();
     }
 
     private void doSomething() {
@@ -27,6 +27,9 @@ public class Example7 {
 
     @Test
     public void ambiguousMethodReference() {
+
+        Runnable ref = (Runnable & Usable) () -> System.out.println("hello");
+
         Runnable runnable = () -> System.out.println("Лямбда для Runnable");
         perform(runnable);
 
@@ -37,5 +40,6 @@ public class Example7 {
         perform(method);
         
         perform((Usable)this::doSomething);
+        perform((Usable)() -> System.out.println("Лямбда для Usable"));
     }
 }

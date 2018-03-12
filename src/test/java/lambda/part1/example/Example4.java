@@ -4,6 +4,8 @@ import lambda.data.Person;
 import org.junit.Test;
 
 import java.util.concurrent.Callable;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,14 +19,21 @@ public class Example4 {
     @Test
     public void closureAnonymousClass() throws Exception {
         // FIXME заменить на effectively final
-        Person person = new Person("Иван", "Мельников", 33);
+        Person person;
 
+
+
+        int val = 42;
+
+        person = new Person("Иван", "Мельников", 33);
         String firstName = performInCurrentThread(new Callable<String>() {
             @Override
             public String call() {
+                System.out.println(val);
                 return person.getFirstName();
             }
         });
+
 
         assertEquals("Иван", firstName);
     }
@@ -54,6 +63,18 @@ public class Example4 {
     public void closureObjectMethodReferenceLambda() throws Exception {
         Person person = new Person("Иван", "Мельников", 33);
 
+        Function<Person, String> func1 = Person::getLastNameStatic;
+        Function<Person, String> func1_1 = person1 -> Person.getLastNameStatic(person1);
+
+
+        Function<Person, String> func2 = Person::getFullName;
+        Function<Person, String> func2_1 = person1 -> person1.getFullName();
+
+        Supplier<String> func3 = person::getFullName;
+        Supplier<String> func3_1 = () -> person.getFullName();
+
+
+
         String firstName = performInCurrentThread(person::getFirstName);
 
         assertEquals("Иван", firstName);
@@ -65,7 +86,7 @@ public class Example4 {
     public void closureReferenceByExpressionLambda() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        String firstName = performInCurrentThread(() -> person.getFirstName());
+        String firstName = performInCurrentThread(() -> this.person.getFirstName());
 
         assertEquals("Иван", firstName);
     }
@@ -74,7 +95,7 @@ public class Example4 {
     public void closureReferenceByObjectMethodReferenceLambda() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        String firstName = performInCurrentThread(person::getFirstName);
+        String firstName = performInCurrentThread(this.person::getFirstName);
 
         assertEquals("Иван", firstName);
     }
@@ -83,13 +104,11 @@ public class Example4 {
     public void closureThisReferenceByExpressionLambda() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        String firstName = performInCurrentThread(() -> this.person.getFirstName());
+        String firstName = performInCurrentThread(() -> person.getFirstName());
         assertEquals("Иван", firstName);
 
-        // FIXME код в старом стиле (на анонимном классе)
         firstName = performInCurrentThread(new Callable<String>() {
 
-            // TODO продемонстрировать байткод
             private final Example4 hiddenReference = Example4.this;
 
             @Override
@@ -117,6 +136,7 @@ public class Example4 {
             }
 
         });
+
         assertEquals("Иван", firstName);
     }
 
@@ -124,7 +144,7 @@ public class Example4 {
     public void overwriteReferenceClosuredByExpressionLambdaAfterUsing() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        String firstName = performInCurrentThread(() -> this.person.getFirstName());
+        String firstName = performInCurrentThread(() -> person.getFirstName());
 
         person = new Person("Алексей", "Игнатенко", 25);
 
@@ -136,7 +156,8 @@ public class Example4 {
     public void overwriteReferenceClosuredByObjectMethodReferenceLambdaAfterUsing() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        String firstName = performInCurrentThread(person::getFirstName);
+        Callable<String> task = person::getFirstName;
+        String firstName = performInCurrentThread(task);
 
         person = new Person("Алексей", "Игнатенко", 25);
 
@@ -145,9 +166,12 @@ public class Example4 {
     }
 
     private Callable<String> performLaterFromCurrentThread(Callable<String> task) {
-        return () -> {
-            System.out.println("Некий код перед выполнением задачи...");
-            return task.call();
+        return new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                System.out.println("Некий код перед выполнением задачи...");
+                return task.call();
+            }
         };
     }
 
@@ -155,7 +179,7 @@ public class Example4 {
     public void overwriteReferenceClosuredByExpressionLambdaBeforeUsing() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        Callable<String> delayedTask = performLaterFromCurrentThread(() -> this.person.getFirstName());
+        Callable<String> delayedTask = performLaterFromCurrentThread(() -> person.getFirstName());
 
         person = new Person("Алексей", "Игнатенко", 25);
 
@@ -169,7 +193,7 @@ public class Example4 {
     public void overwriteReferenceClosuredByObjectMethodReferenceLambdaBeforeUsing() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        Callable<String> delayedTask = performLaterFromCurrentThread(person::getFirstName);
+        Callable<String> delayedTask = performLaterFromCurrentThread(this.person::getFirstName);
 
         person = new Person("Алексей", "Игнатенко", 25);
 
@@ -177,6 +201,7 @@ public class Example4 {
 
         // FIXME какое имя следует ожидать?
         assertEquals("Иван", firstName);
+
     }
 
     private Person getPerson() {
