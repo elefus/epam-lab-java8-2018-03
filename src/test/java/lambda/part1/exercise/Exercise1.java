@@ -1,11 +1,11 @@
 package lambda.part1.exercise;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -25,10 +25,12 @@ public class Exercise1 {
 		}
 		// TODO использовать Arrays.sort
 		
+		
 		assertArrayEquals(new Person[]{new Person("Иван", "Мельников", 20),
 									   new Person("Николай", "Зимов", 30),
 									   new Person("Алексей", "Доренко", 40),
 									   new Person("Артем", "Зимов", 45)}, persons);
+		Arrays.parallelSort(persons, new PersonAgeComarator());
 	}
 	
 	@Test
@@ -48,7 +50,15 @@ public class Exercise1 {
 	public void sortPersonsByLastNameThenFirstNameUsingArraysSortAnonymousComparator() {
 		Person[] persons = getPersons();
 		
+		class LastFirstPersonNameComparator implements Comparator<Person> {
+			
+			@Override
+			public int compare(Person o1, Person o2) {
+				return o1.getLastName().compareTo(o2.getLastName());
+			}
+		}
 		
+		Arrays.sort(persons, new LastFirstPersonNameComparator());
 		// TODO использовать Arrays.sort
 		
 		assertArrayEquals(
@@ -71,6 +81,19 @@ public class Exercise1 {
 	public void findFirstWithAge30UsingGuavaAnonymousPredicate() {
 		List<Person> persons = Arrays.asList(getPersons());
 		
+		Map<String, Person> personByLastName =
+				FluentIterable.from(persons).uniqueIndex(new Function<Person, String>() {
+					@Override
+					public String apply(Person person) {
+						return person.getLastName();
+					}
+				});
+		
+		Map<String, Person> expected = new HashMap<>(persons.size());
+		expected.put("Мельников", new Person("Иван", "Мельников", 20));
+		expected.put("Доренко", new Person("Алексей", "Доренко", 40));
+		expected.put("Зимов", new Person("Николай", "Зимов", 30));
+		assertEquals(expected, personByLastName);
 		// TODO использовать FluentIterable
 		Person person = null;
 		
@@ -78,6 +101,8 @@ public class Exercise1 {
 	}
 	
 	private Person[] getPersons() {
+		
+		
 		return new Person[]{new Person("Иван", "Мельников", 20),
 							new Person("Алексей", "Доренко", 40),
 							new Person("Николай", "Зимов", 30), new Person("Артем", "Зимов", 45)};
