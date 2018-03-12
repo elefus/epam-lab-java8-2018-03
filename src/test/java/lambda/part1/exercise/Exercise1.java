@@ -3,6 +3,7 @@ package lambda.part1.exercise;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Interner;
 import lambda.data.Person;
 import org.junit.Test;
 
@@ -32,7 +33,12 @@ public class Exercise1 {
     @Test
     public void sortPersonsByAgeUsingArraysSortAnonymousComparator() {
         Person[] persons = getPersons();
-        Arrays.sort(persons);
+        Arrays.sort(persons, new Comparator<Person>() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                return Integer.compare(o1.getAge(),o2.getAge());
+            }
+        });
         // TODO использовать Arrays.sort
 
         assertArrayEquals(new Person[]{
