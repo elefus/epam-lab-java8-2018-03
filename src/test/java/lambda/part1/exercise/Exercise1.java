@@ -1,9 +1,13 @@
 package lambda.part1.exercise;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -16,6 +20,14 @@ public class Exercise1 {
         Person[] persons = getPersons();
 
         // TODO использовать Arrays.sort
+        class PersonComparator implements Comparator<Person> {
+            @Override
+            public int compare(Person a, Person b) {
+                return Integer.compare(a.getAge(), b.getAge());
+            }
+        }
+
+        Arrays.sort(persons, new PersonComparator());
 
         assertArrayEquals(new Person[]{
             new Person("Иван", "Мельников", 20),
@@ -30,6 +42,7 @@ public class Exercise1 {
         Person[] persons = getPersons();
 
         // TODO использовать Arrays.sort
+        Arrays.sort(persons, Comparator.comparingInt(Person::getAge));
 
         assertArrayEquals(new Person[]{
             new Person("Иван", "Мельников", 20),
@@ -44,6 +57,7 @@ public class Exercise1 {
         Person[] persons = getPersons();
 
         // TODO использовать Arrays.sort
+        Arrays.sort(persons, Comparator.comparing(Person::getLastName).thenComparing(Person::getFirstName));
 
         assertArrayEquals(new Person[]{
             new Person("Алексей", "Доренко", 40),
@@ -60,6 +74,19 @@ public class Exercise1 {
         // TODO использовать FluentIterable
         Person person = null;
 
+        Predicate<Person> predicate = new Predicate<Person>() {
+            @Override
+            public boolean apply(Person p) {
+                return 30 == p.getAge();
+            }
+        };
+
+
+        Optional<Person> personOptional = FluentIterable.from(persons)
+                .firstMatch(predicate);
+
+        person = personOptional.get();
+
         assertEquals(new Person("Николай", "Зимов", 30), person);
     }
 
@@ -69,6 +96,16 @@ public class Exercise1 {
 
         // TODO использовать FluentIterable
         Person person = null;
+
+        Optional<Person> personOptional = FluentIterable.from(persons)
+                .firstMatch(new Predicate<Person>() {
+                    @Override
+                    public boolean apply(Person p) {
+                        return 30 == p.getAge();
+                    }
+                });
+
+        person = personOptional.get();
 
         assertEquals(new Person("Николай", "Зимов", 30), person);
     }
