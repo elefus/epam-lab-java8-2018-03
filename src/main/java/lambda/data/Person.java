@@ -1,5 +1,6 @@
 package lambda.data;
 
+import javax.xml.ws.BindingType;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -23,12 +24,27 @@ public class Person implements Comparable<Person>, Serializable {
         this.age = age;
     }
 
-    public String getFirstName() {
+    public Person() {
+        firstName = null;
+        lastName = null;
+        age = 0;
+    }
+
+    // Person -> String
+    // () -> String
+    public String getFirstName(Person this) {
         return firstName;
     }
 
+    // Person -> String
     public String getLastName() {
         return this.lastName;
+    }
+
+    // String -> int
+    // (Person, String) -> int
+    public int convert(Person this, String val) {
+        return 0;
     }
 
     public static String getLastNameStatic(Person person) {
