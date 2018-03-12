@@ -1,12 +1,13 @@
 package lambda.part1.exercise;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -88,19 +89,14 @@ public class Exercise1 {
 	public void findFirstWithAge30UsingGuavaAnonymousPredicate() {
 		List<Person> persons = Arrays.asList(getPersons());
 		
-		Map<String, Person> personByLastName =
-				FluentIterable.from(persons).uniqueIndex(new Function<Person, String>() {
-					@Override
-					public String apply(Person person) {
-						return person.getLastName();
-					}
-				});
 		
-		Map<String, Person> expected = new HashMap<>(persons.size());
-		expected.put("Мельников", new Person("Иван", "Мельников", 20));
-		expected.put("Доренко", new Person("Алексей", "Доренко", 40));
-		expected.put("Зимов", new Person("Николай", "Зимов", 30));
-		assertEquals(expected, personByLastName);
+		Optional<Person> personOptional = FluentIterable.from(persons).firstMatch(
+				person -> person.equals(person.getFirstName()));
+		
+		if (personOptional.isPresent()) {
+			System.out.println(personOptional.get());
+			assertEquals(new Person("Алексей", "Доренко", 40), personOptional.get());
+		}
 		// TODO использовать FluentIterable
 		Person person = null;
 		
