@@ -84,7 +84,7 @@ public class Example2 {
 //        process((left, right) -> Example2.sum(left, right));
 //        process((Integer left, Integer right) -> Example2.sum(left, right));
 //        process((left, right) -> Example2.sum((Integer)left, (Integer)right));
-//        Example2.<Integer>process((left, right) -> Example2.sum(left, right));
+        Example2.<Integer>process((left, right) -> Example2.sum(left, right));
     }
 
     private static <T extends Number> void process(Summator<T> summator) {

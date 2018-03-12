@@ -10,7 +10,11 @@ public class Example6 {
     @Test
     public void runNormalRunnable() {
         Runnable r = () -> {
-//                Thread.sleep(100);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         };
 //        r.run();
     }
@@ -24,9 +28,13 @@ public class Example6 {
     @Test
     public void runThrowableRunnable() {
         ThrowableRunnable throwableRunnable = () -> {
-//            Thread.sleep(100);
+            Thread.sleep(100);
         };
-//        throwableRunnable.run();
+        try {
+            throwableRunnable.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
