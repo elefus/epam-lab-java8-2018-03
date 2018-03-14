@@ -18,6 +18,10 @@ public class Exercise2 {
 		return builder.toString();
 	}
 	
+	private void testStringMultiplier(Multiplier<String> multiplier) {
+		objectMethodReferenceStringMultiplierAsserts(multiplier, "aaa", "aAaA", "aA");
+	}
+	
 	private void testIntegerMultiplier(Multiplier<Integer> multiplier) {
 		assertEquals(6, multiplier.multiply(3, 2).intValue());
 		assertEquals(0, multiplier.multiply(Integer.MIN_VALUE, 0).intValue());
@@ -55,19 +59,8 @@ public class Exercise2 {
 	
 	@Test
 	public void implementsStringMultiplierUsingClassMethodReference() {
-		Multiplier<String> multiplier = (String value, int multiplierr) -> {
-			return multiplyString(value, multiplierr);
-		};
+		Multiplier<String> multiplier = Exercise2::multiplyString;
 		testStringMultiplier(multiplier);
-		
-		
-	}
-	
-	private void testStringMultiplier(Multiplier<String> multiplier) {
-		assertEquals("aaa", multiplier.multiply("a", 3));
-		assertEquals("", multiplier.multiply("qwerty", 0));
-		assertEquals("aAaA", multiplier.twice("aA"));
-		assertEquals("", multiplier.twice(""));
 	}
 	
 	private String stringSumWithDelimiter(String string, int number) {
@@ -81,11 +74,22 @@ public class Exercise2 {
 	
 	@Test
 	public void implementsStringMultiplierUsingObjectMethodReference() {
-		Multiplier<String> multiplier = null;
+		Multiplier<String> multiplier =
+				this::multiplyStringNotStaticForObjectMethodReferenceWithDelimiter;
 		
-		assertEquals("a-a-a", multiplier.multiply("a", 3));
+		objectMethodReferenceStringMultiplierAsserts(multiplier, "a-a-a", "A-A", "A");
+	}
+	
+	private String multiplyStringNotStaticForObjectMethodReferenceWithDelimiter(String string,
+																				int i) {
+		return stringSumWithDelimiter(string, i);
+	}
+	
+	private void objectMethodReferenceStringMultiplierAsserts(Multiplier<String> multiplier,
+															  String s, String s2, String a) {
+		assertEquals(s, multiplier.multiply("a", 3));
 		assertEquals("", multiplier.multiply("qwerty", 0));
-		assertEquals("A-A", multiplier.twice("A"));
+		assertEquals(s2, multiplier.twice(a));
 		assertEquals("", multiplier.twice(""));
 	}
 	
