@@ -1,9 +1,12 @@
 package lambda.part1.exercise;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -15,8 +18,7 @@ public class Exercise3 {
     @Test
     public void sortPersonsByAgeUsingArraysSortExpressionLambda() {
         Person[] persons = getPersons();
-
-        // TODO использовать Arrays.sort + expression-lambda
+        Arrays.sort(persons, (p1,p2)-> Integer.compare(p1.getAge(), p2.getAge()));
 
         assertArrayEquals(new Person[]{
             new Person("Иван", "Мельников", 20),
@@ -29,8 +31,7 @@ public class Exercise3 {
     @Test
     public void sortPersonsByLastNameThenFirstNameUsingArraysSortExpressionLambda() {
         Person[] persons = getPersons();
-
-        // TODO использовать Arrays.sort + statement-lambda
+        Arrays.sort(persons, Comparator.comparing((Person p)->p.getLastName()).thenComparing((p)-> p.getFirstName()));
 
         assertArrayEquals(new Person[]{
             new Person("Алексей", "Доренко", 40),
@@ -43,9 +44,9 @@ public class Exercise3 {
     @Test
     public void findFirstWithAge30UsingGuavaPredicateLambda() {
         List<Person> persons = Arrays.asList(getPersons());
-
+        Optional<Person> optional = FluentIterable.from(persons).firstMatch(p -> p.getAge() == 30);
         // TODO использовать FluentIterable
-        Person person = null;
+        Person person = optional.get();
 
         assertEquals(new Person("Николай", "Зимов", 30), person);
     }
