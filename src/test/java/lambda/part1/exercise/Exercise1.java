@@ -28,13 +28,13 @@ public class Exercise1 {
 		}
 		// TODO использовать Arrays.sort
 		
+		Arrays.parallelSort(persons);
 		
 		assertArrayEquals(new Person[]{
 				new Person("Иван", "Мельников", 20),
 				new Person("Николай", "Зимов", 30),
 				new Person("Алексей", "Доренко", 40),
 				new Person("Артем", "Зимов", 45)}, persons);
-		Arrays.parallelSort(persons);
 	}
 	
 	@Test
@@ -114,8 +114,8 @@ public class Exercise1 {
 		
 		return new Person[]{
 				new Person("Иван", "Мельников", 20),
-				new Person("Николай", "Зимов", 30),
 				new Person("Алексей", "Доренко", 40),
+				new Person("Николай", "Зимов", 30),
 				new Person("Артем", "Зимов", 45)};
 	}
 }
