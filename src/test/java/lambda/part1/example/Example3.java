@@ -5,10 +5,7 @@ import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -25,7 +22,7 @@ public class Example3 {
 
         // Без контекста лямбда-выражение бессмысленно
         // (left, right) -> left.getLastName().compareTo(right.getLastName())
-//        Comparator<Person> personComparator = (Person left, Person right) -> left.getLastName().compareTo(right.getLastName());
+        Comparator<Person> personComparator = Comparator.comparing(Person::getLastName);
 
         assertArrayEquals(new Person[]{
             new Person("Алексей", "Доренко", 40),
@@ -39,14 +36,7 @@ public class Example3 {
         List<Person> persons = Arrays.asList(getPersons());
 
         Optional<Person> result = FluentIterable.from(persons)
-                                                // Statement-lambda
-                                                .firstMatch(person -> {
-                                                    if (person == null) {
-                                                        return false;
-                                                    } else {
-                                                        return "Алексей".equals(person.getFirstName());
-                                                    }
-                                                });
+                                                .firstMatch(person -> person != null && "Алексей".equals(person.getFirstName()));
 
         if (result.isPresent()) {
             System.out.println(result.get());
