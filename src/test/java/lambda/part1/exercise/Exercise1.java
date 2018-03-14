@@ -58,8 +58,9 @@ public class Exercise1 {
 		Arrays.sort(persons, new Comparator<Person>() {
 			@Override
 			public int compare(Person o1, Person o2) {
-				return o1.getLastName().compareTo(o2.getLastName()) == 0 ? 0 :
-					   o1.getFirstName().compareTo(o2.getFirstName());
+				return o1.getLastName().compareTo(o2.getLastName()) == 0 ?
+					   o1.getFirstName().compareTo(o2.getFirstName()) :
+					   o1.getLastName().compareTo(o2.getLastName());
 			}
 		});
 		// TODO использовать Arrays.sort
@@ -67,8 +68,9 @@ public class Exercise1 {
 		assertArrayEquals(new Person[]{
 				new Person("Алексей", "Доренко", 40),
 				new Person("Артем", "Зимов", 45),
-				new Person("Иван", "Мельников", 20),
-				new Person("Николай", "Зимов", 30)}, persons);
+				new Person("Николай", "Зимов", 30),
+				new Person("Иван", "Мельников", 20)}, persons);
+		
 	}
 	
 	@Test
