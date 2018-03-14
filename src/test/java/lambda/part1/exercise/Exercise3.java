@@ -1,5 +1,7 @@
 package lambda.part1.exercise;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.Test;
 
@@ -28,7 +30,10 @@ public class Exercise3 {
 	@Test
 	public void sortPersonsByLastNameThenFirstNameUsingArraysSortExpressionLambda() {
 		Person[] persons = getPersons();
-		
+		Arrays.sort(persons,
+					(left, right) -> left.getLastName().compareTo(right.getLastName()) == 0 ?
+									 left.getFirstName().compareTo(right.getFirstName()) :
+									 left.getLastName().compareTo(right.getLastName()));
 		// TODO использовать Arrays.sort + statement-lambda
 		
 		assertArrayEquals(new Person[]{
@@ -42,8 +47,10 @@ public class Exercise3 {
 	public void findFirstWithAge30UsingGuavaPredicateLambda() {
 		List<Person> persons = Arrays.asList(getPersons());
 		
+		Optional<Person> optionalPerson =
+				FluentIterable.from(persons).firstMatch(input -> input.getAge() == 30);
 		// TODO использовать FluentIterable
-		Person person = null;
+		Person person = optionalPerson.get();
 		
 		assertEquals(new Person("Николай", "Зимов", 30), person);
 	}
