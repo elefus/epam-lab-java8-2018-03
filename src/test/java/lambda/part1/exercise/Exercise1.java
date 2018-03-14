@@ -1,6 +1,7 @@
 package lambda.part1.exercise;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.Test;
@@ -28,10 +29,11 @@ public class Exercise1 {
 		// TODO использовать Arrays.sort
 		
 		
-		assertArrayEquals(new Person[]{new Person("Иван", "Мельников", 20),
-									   new Person("Николай", "Зимов", 30),
-									   new Person("Алексей", "Доренко", 40),
-									   new Person("Артем", "Зимов", 45)}, persons);
+		assertArrayEquals(new Person[]{
+				new Person("Иван", "Мельников", 20),
+				new Person("Николай", "Зимов", 30),
+				new Person("Алексей", "Доренко", 40),
+				new Person("Артем", "Зимов", 45)}, persons);
 		Arrays.parallelSort(persons);
 	}
 	
@@ -42,10 +44,11 @@ public class Exercise1 {
 		Arrays.sort(persons, Comparator.comparingInt(Person::getAge));
 		// TODO использовать Arrays.sort
 		
-		assertArrayEquals(new Person[]{new Person("Иван", "Мельников", 20),
-									   new Person("Николай", "Зимов", 30),
-									   new Person("Алексей", "Доренко", 40),
-									   new Person("Артем", "Зимов", 45)}, persons);
+		assertArrayEquals(new Person[]{
+				new Person("Иван", "Мельников", 20),
+				new Person("Николай", "Зимов", 30),
+				new Person("Алексей", "Доренко", 40),
+				new Person("Артем", "Зимов", 45)}, persons);
 	}
 	
 	@Test
@@ -61,44 +64,47 @@ public class Exercise1 {
 		});
 		// TODO использовать Arrays.sort
 		
-		assertArrayEquals(
-				new Person[]{new Person("Алексей", "Доренко", 40), new Person("Артем", "Зимов", 45),
-							 new Person("Николай", "Зимов", 30),
-							 new Person("Иван", "Мельников", 20)}, persons);
+		assertArrayEquals(new Person[]{
+				new Person("Алексей", "Доренко", 40),
+				new Person("Артем", "Зимов", 45),
+				new Person("Иван", "Мельников", 20),
+				new Person("Николай", "Зимов", 30)}, persons);
 	}
 	
 	@Test
 	public void findFirstWithAge30UsingGuavaPredicate() {
 		List<Person> persons = Arrays.asList(getPersons());
-		
-		Optional<Person> personOptional;
-		
-		if ((personOptional =
-					 FluentIterable.from(persons).firstMatch(input -> (input.getAge() == 30)))
-				.isPresent()) {
-			System.out.println(personOptional.get());
-			assertEquals(new Person("Алексей", "Доренко", 40), personOptional.get());
-		}
-		// TODO использовать FluentIterable
-		Person person = null;
-		
+		Predicate personPredicate = new Predicate<Person>() {
+			@Override
+			public boolean apply(Person inputPerson) {
+				return (inputPerson.getAge() == 30);
+			}
+		};
+		Optional<Person> personOptional = FluentIterable.from(persons).firstMatch(personPredicate);
+		Person person = personOptional.get();
+		System.out.println(personOptional.get());
 		assertEquals(new Person("Николай", "Зимов", 30), person);
+		// TODO использовать FluentIterable
+		
 	}
 	
 	@Test
 	public void findFirstWithAge30UsingGuavaAnonymousPredicate() {
 		List<Person> persons = Arrays.asList(getPersons());
 		
-		
-		Optional<Person> personOptional = FluentIterable.from(persons).firstMatch(
-				person -> person.equals(person.getFirstName()));
-		
+		Optional<Person> personOptional =
+				FluentIterable.from(persons).firstMatch((new Predicate<Person>() {
+					@Override
+					public boolean apply(Person inputPerson) {
+						return (inputPerson.getAge() == 30);
+					}
+				}));
 		if (personOptional.isPresent()) {
 			System.out.println(personOptional.get());
-			assertEquals(new Person("Алексей", "Доренко", 40), personOptional.get());
+			assertEquals(new Person("Николай", "Зимов", 30), personOptional.get());
 		}
 		// TODO использовать FluentIterable
-		Person person = null;
+		Person person = personOptional.get();
 		
 		assertEquals(new Person("Николай", "Зимов", 30), person);
 	}
@@ -106,8 +112,10 @@ public class Exercise1 {
 	private Person[] getPersons() {
 		
 		
-		return new Person[]{new Person("Иван", "Мельников", 20),
-							new Person("Алексей", "Доренко", 40),
-							new Person("Николай", "Зимов", 30), new Person("Артем", "Зимов", 45)};
+		return new Person[]{
+				new Person("Иван", "Мельников", 20),
+				new Person("Николай", "Зимов", 30),
+				new Person("Алексей", "Доренко", 40),
+				new Person("Артем", "Зимов", 45)};
 	}
 }
