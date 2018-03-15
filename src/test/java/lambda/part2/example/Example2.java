@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -22,7 +23,7 @@ public class Example2 {
     public void checkConcretePersonStringProperty() {
         Person person = new Person("Иван", "Мельников", 33);
 
-        // Person -> String                      // Person -> String
+        // Person -> String                    // Person -> String
         Function<Person, String> getProperty = Person::getFirstName;
         Predicate<String> checkFirstName = stringPropertyChecker(person, getProperty);
 
@@ -30,7 +31,7 @@ public class Example2 {
         assertFalse(checkFirstName.test("Игорь"));
     }
 
-    // (Person -> String) -> Person -> String -> boolean
+    // (Person -> String) -> (Person -> (String -> boolean))
     private static Function<Person, Predicate<String>> stringPropertyChecker(Function<Person, String> propertyExtractor) {
         return person -> checkingValue -> Objects.equals(propertyExtractor.apply(person), checkingValue);
     }
@@ -46,8 +47,8 @@ public class Example2 {
         assertFalse(lastNameChecker.apply(person).test("Гущин"));
     }
 
-    // (V -> P) -> (V -> P ->  boolean)
-    private static <V, P> Function<V, Predicate<P>> propertyChecker(Function<V, P> propertyExtractor) {
+    // (V -> P) -> (V -> (P -> boolean))
+    private static <V, P, T> Function<V, Predicate<P>> propertyChecker(Function<V, T> propertyExtractor) {
         return object -> checkedProperty -> Objects.equals(propertyExtractor.apply(object), checkedProperty);
     }
 
