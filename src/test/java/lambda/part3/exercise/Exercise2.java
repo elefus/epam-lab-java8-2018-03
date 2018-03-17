@@ -90,7 +90,7 @@ public class Exercise2 {
                                         })
                                         .map(ch -> (int)ch)
                                         .getMapped();
-        System.out.println(codes);
+
         // TODO               MapHelper.from(employees)
         // TODO                        .flatMap(Employee -> JobHistoryEntry)
         // TODO                        .map(JobHistoryEntry -> String(position))
