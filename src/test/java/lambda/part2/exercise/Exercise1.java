@@ -3,9 +3,7 @@ package lambda.part2.exercise;
 import lambda.data.Person;
 import org.junit.Test;
 
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
+import java.util.function.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -19,8 +17,8 @@ public class Exercise1 {
         Person person = new Person("Иван", "Мельников", 33);
 
         // TODO создать переменную ageExtractor: Person -> Integer, используя Function и ссылку на метод
-        Function<Person, Integer> ageExtractor = Person::getAge;
-         assertEquals(33, ageExtractor.apply(person).intValue());
+        ToIntFunction<Person> ageExtractor = Person::getAge;
+         assertEquals(33, ageExtractor.applyAsInt(person));
 
     }
 
@@ -47,7 +45,7 @@ public class Exercise1 {
     // TODO метод createExtractorAgeOfPersonWithTheLongestFullName: (Person -> String) -> ((Person, Person) -> int),
     // TODO - принимающий способ извлечения полного имени из объекта Person
     // TODO - возвращающий BiFunction, сравнивающий два объекта Person и возвращающий возраст того, чье полное имя длиннее.
-     private static BiFunction<Person, Person, Integer> createExtractorAgeOfPersonWithTheLongestFullName(Function<Person, String> personStringFunction) {
+     private static ToIntBiFunction<Person, Person> createExtractorAgeOfPersonWithTheLongestFullName(Function<Person, String> personStringFunction) {
         return (p1, p2) -> getFullName(p1).length() > getFullName(p2).length() ?
                 p1.getAge() : p2.getAge();
     }
@@ -62,8 +60,8 @@ public class Exercise1 {
 
         // (Person, Person) -> Integer
         // TODO воспользоваться методом createExtractorAgeOfPersonWithTheLongestFullName
-        BiFunction<Person, Person, Integer> extractorAgeOfPersonWithTheLongestFullName = createExtractorAgeOfPersonWithTheLongestFullName(getFullName);
+        ToIntBiFunction<Person, Person> extractorAgeOfPersonWithTheLongestFullName = createExtractorAgeOfPersonWithTheLongestFullName(getFullName);
 
-        assertEquals(33, extractorAgeOfPersonWithTheLongestFullName.apply(person1, person2).intValue());
+        assertEquals(33, extractorAgeOfPersonWithTheLongestFullName.applyAsInt(person1, person2));
     }
 }
