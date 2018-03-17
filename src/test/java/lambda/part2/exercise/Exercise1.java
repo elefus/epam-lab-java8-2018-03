@@ -3,11 +3,12 @@ package lambda.part2.exercise;
 import lambda.data.Person;
 import org.junit.Test;
 
-import java.util.function.*;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.ToIntBiFunction;
+import java.util.function.ToIntFunction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @SuppressWarnings({"unused", "ConstantConditions"})
 public class Exercise1 {
@@ -18,7 +19,7 @@ public class Exercise1 {
 
         // TODO создать переменную ageExtractor: Person -> Integer, используя Function и ссылку на метод
         ToIntFunction<Person> ageExtractor = Person::getAge;
-         assertEquals(33, ageExtractor.applyAsInt(person));
+        assertEquals(33, ageExtractor.applyAsInt(person));
 
     }
 
@@ -31,22 +32,22 @@ public class Exercise1 {
         // TODO создать переменную sameAgesChecker: (Person, Person) -> boolean, используя BiPredicate
         BiPredicate<Person, Person> sameAgesChecker = (p1, p2) -> p1.getAge() == p2.getAge();
 
-         assertTrue(sameAgesChecker.test(person1, person2));
-         assertFalse(sameAgesChecker.test(person1, person3));
-         assertFalse(sameAgesChecker.test(person2, person3));
+        assertTrue(sameAgesChecker.test(person1, person2));
+        assertFalse(sameAgesChecker.test(person1, person3));
+        assertFalse(sameAgesChecker.test(person2, person3));
 
     }
 
     // TODO метод getFullName: Person -> String, извлекающий из объекта Person строку в формате "имя фамилия".
-     private static String getFullName(Person person) {
+    private static String getFullName(Person person) {
         return person.getFullName();
-     }
+    }
 
     // TODO метод createExtractorAgeOfPersonWithTheLongestFullName: (Person -> String) -> ((Person, Person) -> int),
     // TODO - принимающий способ извлечения полного имени из объекта Person
     // TODO - возвращающий BiFunction, сравнивающий два объекта Person и возвращающий возраст того, чье полное имя длиннее.
      private static ToIntBiFunction<Person, Person> createExtractorAgeOfPersonWithTheLongestFullName(Function<Person, String> personStringFunction) {
-        return (p1, p2) -> getFullName(p1).length() > getFullName(p2).length() ?
+        return (p1, p2) -> personStringFunction.apply(p1).length() > (personStringFunction.apply(p2).length()) ?
                 p1.getAge() : p2.getAge();
     }
 
