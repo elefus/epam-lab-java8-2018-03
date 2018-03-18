@@ -17,8 +17,8 @@ public class Exercise3 {
 
     private static class LazyMapHelper<T, R> {
 
-        private List<T> source;
-        private Function<T, R> function;
+        private final List<T> source;
+        private final Function<T, R> function;
 
         public LazyMapHelper(List<T> source, Function<T, R> function) {
             this.source = source;
@@ -26,12 +26,10 @@ public class Exercise3 {
         }
 
         public static <T> LazyMapHelper<T, T> from(List<T> list) {
-            // TODO реализация
             return new LazyMapHelper<>(list, t -> t);
         }
 
         public List<R> force() {
-            // TODO реализация
             List<R> result = new ArrayList();
             for (T t : source) {
                 result.add(function.apply(t));
@@ -40,7 +38,6 @@ public class Exercise3 {
         }
 
         public <R2> LazyMapHelper<T, R2> map(Function<R, R2> mapping) {
-            // TODO реализация
             return new LazyMapHelper<>(source, function.andThen(mapping));
         }
     }
