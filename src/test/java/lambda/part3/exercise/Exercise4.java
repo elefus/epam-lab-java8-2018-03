@@ -1,34 +1,53 @@
 package lambda.part3.exercise;
 
 import lambda.data.Employee;
+import lambda.data.JobHistoryEntry;
 import lambda.part3.example.Example1;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings({"unused", "ConstantConditions"})
 public class Exercise4 {
 
-    private static class LazyCollectionHelper<T, R> {
+    private static class LazyCollectionHelper<T1, T2> {
+
+        private final List<T1> source;
+        private final Function<T1, List<T2>> mappingFunction;
+
+        public LazyCollectionHelper(List<T1> source, Function<T1, List<T2>> mappingFunction) {
+            this.source = source;
+            this.mappingFunction = mappingFunction;
+        }
 
         public static <T> LazyCollectionHelper<T, T> from(List<T> list) {
-            throw new UnsupportedOperationException();
+            return new LazyCollectionHelper<>(list, Collections::singletonList);
         }
 
-        public <U> LazyCollectionHelper<T, U> flatMap(Function<R, List<U>> flatMapping) {
-            throw new UnsupportedOperationException();
+        public <T3> LazyCollectionHelper<T1, T3> flatMap(Function<T2, List<T3>> flatMapping) {
+            return new LazyCollectionHelper<>(source, mappingFunction.andThen(getListToListMappingFunction(flatMapping)));
         }
 
-        public <U> LazyCollectionHelper<T, U> map(Function<R, U> mapping) {
-            throw new UnsupportedOperationException();
+        public <T3> LazyCollectionHelper<T1, T3> map(Function<T2, T3> mapping) {
+            return new LazyCollectionHelper<>(source, mappingFunction.andThen(getListToListMappingFunction(mapping.andThen(Collections::singletonList))));
         }
 
-        public List<R> force() {
-            throw new UnsupportedOperationException();
+        public List<T2> force() {
+            return getListToListMappingFunction(mappingFunction).apply(source);
+        }
+
+        private static <FROM, TO> Function<List<FROM>, List<TO>> getListToListMappingFunction(Function<FROM, List<TO>> mapping) {
+            return list -> list.stream()
+                    .map(mapping)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
         }
     }
 
@@ -36,13 +55,13 @@ public class Exercise4 {
     public void mapEmployeesToCodesOfLetterTheirPositionsUsingLazyFlatMapHelper() {
         List<Employee> employees = Example1.getEmployees();
 
-        List<Integer> codes = null;
-        // TODO              LazyCollectionHelper.from(employees)
-        // TODO                                  .flatMap(Employee -> JobHistoryEntry)
-        // TODO                                  .map(JobHistoryEntry -> String(position))
-        // TODO                                  .flatMap(String -> Character(letter))
-        // TODO                                  .map(Character -> Integer(code letter)
-        // TODO                                  .force();
+        List<Integer> codes = LazyCollectionHelper.from(employees)
+                .flatMap(Employee::getJobHistory)
+                .map(JobHistoryEntry::getPosition)
+                .flatMap(o -> o.chars().mapToObj(i -> (char) i).collect(Collectors.toList()))
+                .map(character -> (int) character)
+                .force();
+
         assertEquals(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev"), codes);
     }
 
