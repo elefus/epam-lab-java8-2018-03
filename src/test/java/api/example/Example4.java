@@ -18,6 +18,9 @@ public class Example4 {
         assertArrayEquals(new int[]{-4, -1, 0, 1, 2, 3, 4, 6, 9}, values);
     }
 
+    /**
+     * @see <a href="https://habrahabr.ru/company/epam_systems/blog/247805">Алгоритм параллельного сканирования</a>
+     */
     @Test
     public void arraysParallelPrefixUsingJava8() {
         int[] values = {1, 6, 9, 4, -1, -4, 0, 2, 3};
