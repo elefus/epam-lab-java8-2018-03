@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,7 +23,7 @@ public class Exercise3 {
             this.tToR = tToR;
         }
 
-        public static LazyMapHelper<T, T> from(List<T> list) {
+        public static <T> LazyMapHelper<T, T> from(List<T> list) {
             // TODO реализация
 //            throw new UnsupportedOperationException();
             return new LazyMapHelper<>(list, t -> t);
