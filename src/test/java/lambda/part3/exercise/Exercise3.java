@@ -5,6 +5,7 @@ import lambda.data.Person;
 import lambda.part3.example.Example1;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -32,7 +33,12 @@ public class Exercise3 {
         public List<R> force() {
             // TODO реализация
 //            throw new UnsupportedOperationException();
-            return tList.stream().map(t -> tToR.apply(t)).collect(Collectors.toList());
+            List<R> list = new ArrayList<>();
+            for (T t : tList) {
+                R apply = tToR.apply(t);
+                list.add(apply);
+            }
+            return list;
         }
 
         public <R2> LazyMapHelper<T, R2> map(Function<R, R2> mapping) {
@@ -46,7 +52,7 @@ public class Exercise3 {
     public void mapEmployeesToLengthOfTheirFullNamesUsingLazyMapHelper() {
         List<Employee> employees = Example1.getEmployees();
 
-        List<Integer>
+        List
                 lengths =
                 LazyMapHelper.from(employees)
                              .map(Employee::getPerson)
