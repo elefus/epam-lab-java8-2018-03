@@ -1,6 +1,7 @@
 package lambda.part3.exercise;
 
 import lambda.data.Employee;
+import lambda.data.JobHistoryEntry;
 import lambda.part3.example.Example1;
 import org.junit.Test;
 
@@ -72,7 +73,13 @@ public class Exercise4 {
     public void mapEmployeesToCodesOfLetterTheirPositionsUsingLazyFlatMapHelper() {
         List<Employee> employees = Example1.getEmployees();
 
-        List<Integer> codes = null;
+        List<Integer>
+                codes =
+                LazyCollectionHelper.from(employees)
+                                    .flatMap(Employee::getJobHistory)
+                                    .map(JobHistoryEntry::getPosition)
+                                    .flatMap(Exercise4::calcCodes)
+                                    .force();
         // TODO              LazyCollectionHelper.from(employees)
         // TODO                                  .flatMap(Employee -> JobHistoryEntry)
         // TODO                                  .map(JobHistoryEntry -> String(position))
