@@ -4,12 +4,10 @@ import lambda.data.Person;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings({"ConstantConditions", "unused", "MismatchedQueryAndUpdateOfCollection"})
 public class Exercise1 {
 
     enum Status {
@@ -31,6 +29,15 @@ public class Exercise1 {
         candidates.put(helen, Status.PENDING);
 
         // TODO реализация
+        for (Map.Entry entry : candidates.entrySet()) {
+            Person p = (Person) entry.getKey();
+            int age = p.getAge();
+            if (age <= 21) {
+                candidates.replace(p, Status.DECLINED);
+            } else {
+                candidates.replace(p, Status.ACCEPTED);
+            }
+        }
 
         assertEquals(Status.ACCEPTED, candidates.get(ivan));
         assertEquals(Status.ACCEPTED, candidates.get(helen));
@@ -52,8 +59,18 @@ public class Exercise1 {
         candidates.put(new Person("b", "c", 5), Status.PENDING);
 
         // TODO реализация
-
         Map<Person, Status> expected = new HashMap<>();
+        for (Map.Entry entry : candidates.entrySet()) {
+            Person p = (Person) entry.getKey();
+            int age = p.getAge();
+            if (age > 21) {
+                expected.put(p, Status.ACCEPTED);
+                candidates.replace(p, Status.ACCEPTED);
+            }
+
+        }
+
+
         expected.put(ivan, Status.ACCEPTED);
         expected.put(helen, Status.ACCEPTED);
         assertEquals(expected, candidates);
