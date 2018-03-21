@@ -18,6 +18,16 @@ public class Example4 {
         assertArrayEquals(new int[]{-4, -1, 0, 1, 2, 3, 4, 6, 9}, values);
     }
 
+    // (A op B) op C == A op (B op C)
+
+    // 1 2 3 4 5 6 7 8
+    // sum
+
+
+    // scan: 1 3 6 10 15 21 28 36
+    // reduce (identity = 0): 0 + 1 = 1
+    //                                1 + 2 = 3
+    //                                        3 + 3 = 6
     /**
      * @see <a href="https://habrahabr.ru/company/epam_systems/blog/247805">Алгоритм параллельного сканирования</a>
      */
