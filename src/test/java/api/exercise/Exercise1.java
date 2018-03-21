@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
@@ -95,13 +96,28 @@ public class Exercise1 {
         candidates.put(ivan, Status.PENDING);
 
         // TODO реализация
-        Status alexStatus = null;
-        Status ivanStatus = null;
-        Status helenStatus = null;
+        Status alexStatus = getStatusFromMap(alex, candidates);
+        Status ivanStatus = getStatusFromMap(ivan, candidates);
+        Status helenStatus = getStatusFromMap(helen, candidates);
 
         assertEquals(Status.PENDING, alexStatus);
         assertEquals(Status.PENDING, ivanStatus);
         assertEquals(Status.UNKNOWN, helenStatus);
+    }
+
+    private Status getStatusFromMap(Person p, Map<Person, Status> candidates) {
+        Status result = Status.UNKNOWN;
+        for (Map.Entry<Person, Status> entry : candidates.entrySet()) {
+            Optional<Status> optionalStatus = Optional.ofNullable(entry.getValue());
+            if (optionalStatus.isPresent()) {
+                if (p.getFirstName().equalsIgnoreCase(entry.getKey().getFirstName())) {
+                    result = entry.getValue();
+                }
+            } else {
+                result = entry.setValue(Status.UNKNOWN);
+            }
+        }
+        return result;
     }
 
     @Test
