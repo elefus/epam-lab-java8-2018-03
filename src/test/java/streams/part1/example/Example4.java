@@ -121,8 +121,11 @@ public class Example4 {
     @Test
     public void convertGenericStreamToPrimitive() {
         Stream<String> original = Stream.of("1", "2", "10", "20");
+        Integer genericSum = original.map(Integer::parseInt).reduce(0, Integer::sum);
+
 
         IntStream result = original.mapToInt(Integer::parseInt);
+        int sum = result.sum();
 
         assertEquals(4, result.count());
     }
