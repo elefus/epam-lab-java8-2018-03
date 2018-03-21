@@ -191,12 +191,4 @@ public class Example3 {
             assertArrayEquals(new String[]{"a", "b", "c"}, valuesInStream);
         }
     }
-
-    @Test
-    public void streamRandomInts() {
-        int[] ints = ThreadLocalRandom.current()
-                                      .ints()
-                                      .limit(100)
-                                      .toArray();
-    }
 }
