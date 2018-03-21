@@ -114,17 +114,6 @@ public class Example3 {
     }
 
     @Test
-    public void infinityStreamUsingIterate() {
-        UnaryOperator<Integer> oddNumbersGenerator = n -> n + 2;
-
-        Stream<Integer> stream = Stream.iterate(1, oddNumbersGenerator);
-        Integer[] first10ValuesInStream = stream.limit(10)
-                                                .toArray(Integer[]::new);
-
-        assertArrayEquals(new Integer[]{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}, first10ValuesInStream);
-    }
-
-    @Test
     public void infinityStreamUsingGenerate() {
         Supplier<String> supplier = () -> "YOLO";
 
@@ -134,6 +123,20 @@ public class Example3 {
                                               .toArray(String[]::new);
 
         assertArrayEquals(new String[]{"YOLO", "YOLO", "YOLO"}, first3ValuesInStream);
+    }
+
+    @Test
+    public void infinityStreamUsingIterate() {
+        UnaryOperator<Integer> oddNumbersGenerator = n -> n + 2;
+
+        Stream<Integer> stream = Stream.iterate(1, oddNumbersGenerator);
+        Stream<Integer> limitedStream = stream.limit(10);
+        Stream<String> mapStream = limitedStream.map(String::valueOf);
+        Stream<String> filteredStream = mapStream.filter(String::isEmpty);
+//        Stream<Integer> limitedStream2 = stream.limit(10);
+        Integer[] first10ValuesInStream = limitedStream.toArray(Integer[]::new);
+
+        assertArrayEquals(new Integer[]{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}, first10ValuesInStream);
     }
 
     @Test
