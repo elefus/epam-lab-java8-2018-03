@@ -45,10 +45,10 @@ public class Example1 {
             //  .findAny()
             //  .findFirst()
             //  .forEach(Consumer<T>)
-            //  .forEachOrdered(Consumer<>)
+            //  .forEachOrdered(Consumer<T>)
             //  .max(Comparator<T>)
             //  .min(Comparator<T>)
-            //  .toArray(IntFunction<A[]>)
+            //  .toArray(IntFunction<T[]>)
             //  .iterator()
     }
 
@@ -56,11 +56,11 @@ public class Example1 {
      *            filter map flatMap peek distinct unordered sorted skip limit sequential parallel
      * IMMUTABLE        |   |       |    |        |         |      |    |     |          |
      * CONCURRENT       |   |       |    |        |         |      |    |     |          |
-     * DISTINCT         |   |       |    |        |         |      |    |     |          |
-     * NONNULL          |   |       |    |        |         |      |    |     |          |
-     * ORDERED          |   |       |    |        |         |      |    |     |          |
-     * SORTED           |   |       |    |        |         |      |    |     |          |
-     * SIZED            |   |       |    |        |         |      |    |     |          |
+     * DISTINCT         | - |   -   |    |   +    |         |      |    |     |          |
+     * NONNULL          | - |   -   |    |        |         |      |    |     |          |
+     * ORDERED          |   |       |    |        |    -    |   +  |    |     |          |
+     * SORTED           | - |   -   |    |        |    -    |   +  |    |     |          |
+     * SIZED        -   |   |   -   |    |   -    |         |      |    |     |          |
      * SUBSIZED         |   |       |    |        |         |      |    |     |          |
      */
     @Test
@@ -73,7 +73,7 @@ public class Example1 {
         assertEquals(6, countPersons);
 
         try {
-            Person[] persons = personStream.toArray(Person[]::new);
+            Employee[] persons = employeeStream.toArray(Employee[]::new);
         } catch (IllegalStateException ex) {
             assertEquals("stream has already been operated upon or closed", ex.getMessage());
             return;
