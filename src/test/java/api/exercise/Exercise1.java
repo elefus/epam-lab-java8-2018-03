@@ -131,11 +131,17 @@ public class Exercise1 {
         oldValues.put(dmitry, Status.DECLINED);
         oldValues.put(ivan, Status.ACCEPTED);
 
-        Map<Person, Status> newValues = new HashMap<>();
+        Map<Person, Status> newValues = new HashMap<>(oldValues.size());
         newValues.put(alex, Status.DECLINED);
         newValues.put(helen, Status.PENDING);
 
         // TODO реализация
+        for (Map.Entry<Person, Status> entry : oldValues.entrySet()) {
+
+            if (!newValues.containsKey(entry.getKey())) {
+                newValues.put(entry.getKey(), entry.getValue());
+            }
+        }
 
         assertEquals(Status.DECLINED, newValues.get(alex));
         assertEquals(Status.ACCEPTED, newValues.get(ivan));
