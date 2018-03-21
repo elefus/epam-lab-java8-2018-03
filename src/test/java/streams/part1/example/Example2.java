@@ -25,14 +25,27 @@ public class Example2 {
     public void getIvansLastNames() {
         List<Employee> employees = Example1.getEmployees();
 
-        String[] ivansLastNames = null;
+        String[] ivansLastNames = employees.stream()
+                                           .map(Employee::getPerson)
+                                           .filter(person -> "Иван".equals(person.getFirstName()))
+                                           .map(Person::getLastName)
+                                           .toArray(String[]::new);
 
         assertArrayEquals(new String[]{"Мельников", "Александров"}, ivansLastNames);
     }
 
     @Test
     public void checkAny25AgedIvanHasDevExperience() {
-        boolean any25IvanHasDevExperience = false;
+        List<Employee> employees = Example1.getEmployees();
+
+        boolean any25IvanHasDevExperience = employees.stream()
+                                                     .filter(employee -> "Иван".equals(employee.getPerson().getFirstName()))
+                                                     .filter(employee -> employee.getPerson().getAge() > 25)
+                                                     .map(Employee::getJobHistory)
+                                                     .flatMap(Collection::stream)
+                                                     .map(JobHistoryEntry::getPosition)
+//                                                     .filter("dev"::equals).findAny().isPresent();
+                                                     .anyMatch("dev"::equals);
 
         assertTrue(any25IvanHasDevExperience);
     }
