@@ -4,6 +4,7 @@ import lambda.data.Person;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -70,6 +71,14 @@ public class Exercise1 {
 
         }
 
+        for (Iterator<Map.Entry<Person, Status>> it = candidates.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<Person, Status> entry = it.next();
+            if (entry != null) {
+                if (!entry.getValue().equals(Status.ACCEPTED)) {
+                    it.remove();
+                }
+            }
+        }
 
         expected.put(ivan, Status.ACCEPTED);
         expected.put(helen, Status.ACCEPTED);
