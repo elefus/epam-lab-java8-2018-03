@@ -9,14 +9,13 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings({"ConstantConditions", "unused"})
 public class Exercise2 {
 
     @Test
     public void calcAverageAgeOfEmployees() {
         List<Employee> employees = Example1.getEmployees();
 
-        Double expected = null;
+        Double expected = employees.stream().map(Employee::getPerson).mapToInt(Person::getAge).average().getAsDouble();
 
         assertEquals(33.66, expected, 0.1);
     }
@@ -40,9 +39,8 @@ public class Exercise2 {
     }
 
     /**
-     * Вычислить общую сумму заработной платы для сотрудников.
-     * Базовая ставка каждого сотрудника составляет 75_000.
-     * Если на текущей позиции (последняя в списке) он работает больше трех лет - ставка увеличивается на 20%
+     * Вычислить общую сумму заработной платы для сотрудников. Базовая ставка каждого сотрудника составляет 75_000. Если
+     * на текущей позиции (последняя в списке) он работает больше трех лет - ставка увеличивается на 20%
      */
     @Test
     public void calcTotalSalaryWithCoefficientWorkExperience() {
