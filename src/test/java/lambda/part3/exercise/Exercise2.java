@@ -80,13 +80,17 @@ public class Exercise2 {
         List<Employee> employees = Example1.getEmployees();
 
 
-        List<Integer> codes = null;
-                       /*TODO MapHelper.from(employees)
-                                .flatMap(Employee::getJobHistory)
-                                .map(JobHistoryEntry::getPosition)
-                                .flatMap()
-                                .map(Character -> Integer(code letter)
-                                .getMapped();*/
+        List<Integer> codes = MapHelper.from(employees)
+                                       .flatMap(Employee::getJobHistory)
+                                       .map(JobHistoryEntry::getPosition)
+                                       .flatMap(s -> {
+                                           List<Character> chs = new ArrayList<>();
+                                           for (int i = 0; i < s.length(); i++)
+                                               chs.add(s.charAt(i));
+                                           return chs;
+                                       })
+                                       .map(Integer::new)
+                                       .getMapped();
         assertEquals(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev"), codes);
     }
 
