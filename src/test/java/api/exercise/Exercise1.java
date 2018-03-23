@@ -30,7 +30,7 @@ public class Exercise1 {
         candidates.put(ivan, Status.PENDING);
         candidates.put(helen, Status.PENDING);
 
-        candidates.replaceAll((person, status) -> person.getAge() > 20 ? Status.ACCEPTED : Status.DECLINED);
+        candidates.replaceAll((person, status) -> person.getAge() > 21 ? Status.ACCEPTED : Status.DECLINED);
 
         assertEquals(Status.ACCEPTED, candidates.get(ivan));
         assertEquals(Status.ACCEPTED, candidates.get(helen));
@@ -51,7 +51,7 @@ public class Exercise1 {
         candidates.put(new Person("b", "c", 16), Status.PENDING);
         candidates.put(new Person("b", "c", 5), Status.PENDING);
 
-        candidates.keySet().removeIf(person -> person.getAge() <= 21);
+        candidates.keySet().removeIf(person -> person.getAge() < 22);
         candidates.replaceAll((person, status) -> Status.ACCEPTED);
 
         Map<Person, Status> expected = new HashMap<>();
