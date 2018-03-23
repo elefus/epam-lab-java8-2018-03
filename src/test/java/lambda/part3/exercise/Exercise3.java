@@ -5,10 +5,10 @@ import lambda.data.Person;
 import lambda.part3.example.Example1;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,7 +30,9 @@ public class Exercise3 {
         }
 
         public List<T2> force() {
-            return source.stream().map(mappingFunction).collect(Collectors.toList());
+            List<T2> result = new ArrayList<>();
+            source.forEach(mappingFunction.andThen(result::add)::apply);
+            return result;
         }
 
         public <T3> LazyMapHelper<T1, T3> map(Function<T2, T3> mapping) {
