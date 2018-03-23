@@ -7,6 +7,7 @@ import lambda.part3.example.Example1;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,7 +57,8 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         Set<String> companies = employees.stream()
-                .flatMap(employee -> employee.getJobHistory().stream())
+                .map(Employee::getJobHistory)
+                .flatMap(Collection::stream)
                 .map(JobHistoryEntry::getEmployer)
                 .collect(Collectors.toSet());
 
@@ -73,7 +75,11 @@ public class Exercise1 {
     public void findMinimalAgeOfEmployees() {
         List<Employee> employees = Example1.getEmployees();
 
-        Integer minimalAge = employees.stream().map(employee -> employee.getPerson().getAge()).min(Integer::compareTo).get();
+        Integer minimalAge = employees.stream()
+                .map(Employee::getPerson)
+                .mapToInt(Person::getAge)
+                .min()
+                .getAsInt();
 
         assertEquals(21, minimalAge.intValue());
     }
