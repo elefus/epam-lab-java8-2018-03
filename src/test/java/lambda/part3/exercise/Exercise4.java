@@ -44,10 +44,11 @@ public class Exercise4 {
         }
 
         private static <FROM, TO> Function<List<FROM>, List<TO>> getListToListMappingFunction(Function<FROM, List<TO>> mapping) {
-            return list -> list.stream()
-                    .map(mapping)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toList());
+            return list -> {
+                List<TO> result = new ArrayList<>();
+                list.forEach(mapping.andThen(result::addAll)::apply);
+                return result;
+            };
         }
     }
 
