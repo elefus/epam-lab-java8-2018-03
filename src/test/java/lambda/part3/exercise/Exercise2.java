@@ -42,9 +42,9 @@ public class Exercise2 {
          * @param mapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> map(Function<T, R> mapping) {
-            return from(source.stream()
-                    .map(mapping)
-                    .collect(Collectors.toList()));
+            List<R> newSource = new ArrayList<>();
+            source.forEach(mapping.andThen(newSource::add)::apply);
+            return from(newSource);
         }
 
         /**
@@ -54,10 +54,9 @@ public class Exercise2 {
          * @param flatMapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> flatMap(Function<T, List<R>> flatMapping) {
-            return from(source.stream()
-                    .map(flatMapping)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toList()));
+            List<R> newSource = new ArrayList<>();
+            source.forEach(flatMapping.andThen(newSource::addAll)::apply);
+            return from(newSource);
         }
     }
 
