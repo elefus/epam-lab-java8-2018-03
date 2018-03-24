@@ -5,6 +5,7 @@ import lambda.data.Person;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -31,10 +32,7 @@ public class Exercise3 {
     public void sortPersonsByLastNameThenFirstNameUsingArraysSortExpressionLambda() {
         Person[] persons = getPersons();
 
-        Arrays.sort(persons, (o1, o2) ->
-                o1.getLastName().compareTo(o2.getLastName()) != 0 ?
-                        o1.getLastName().compareTo(o2.getLastName()) :
-                        o1.getFirstName().compareTo(o2.getFirstName()));
+        Arrays.sort(persons, Comparator.comparing(Person::getLastName).thenComparing(Person::getFirstName));
 
         assertArrayEquals(new Person[]{
             new Person("Алексей", "Доренко", 40),
