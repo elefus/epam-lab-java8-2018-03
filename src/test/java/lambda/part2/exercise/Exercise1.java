@@ -34,7 +34,9 @@ public class Exercise1 {
         assertFalse(sameAgesChecker.test(person2, person3));
     }
 
-    private static Function<Person, String> getFullName = Person::getFullName;
+    private static String getFullName(Person person) {
+        return person.getFullName();
+    }
 
     private Function<Function<Person, String>, BiFunction<Person, Person, Integer>> createExtractorAgeOfPersonWithTheLongestFullName =
             personFullNameFunction ->
@@ -48,7 +50,7 @@ public class Exercise1 {
         Person person1 = new Person("Иван", "Мельников", 33);
         Person person2 = new Person("Илья", "Жирков", 22);
 
-        Function<Person, String> getFullName = Person::getFullName;
+        Function<Person, String> getFullName = Exercise1::getFullName;
 
         BiFunction<Person, Person, Integer> extractorAgeOfPersonWithTheLongestFullName = createExtractorAgeOfPersonWithTheLongestFullName.apply(getFullName);
 
