@@ -14,7 +14,7 @@ import java.util.List;
 public class Example1 {
 
     @SneakyThrows
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchFieldException,NoSuchMethodException {
         IndexedString indexedString = new IndexedString(1, "String");
 
         ParameterizedType indexedStringType = (ParameterizedType)indexedString.getClass().getGenericSuperclass();
