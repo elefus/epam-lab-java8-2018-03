@@ -6,10 +6,10 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings({"ConstantConditions", "unused", "MismatchedQueryAndUpdateOfCollection"})
 public class Exercise1 {
 
     enum Status {
@@ -31,6 +31,15 @@ public class Exercise1 {
         candidates.put(helen, Status.PENDING);
 
         // TODO реализация
+        for (Map.Entry entry : candidates.entrySet()) {
+            Person p = (Person) entry.getKey();
+            int age = p.getAge();
+            if (age <= 21) {
+                candidates.replace(p, Status.DECLINED);
+            } else {
+                candidates.replace(p, Status.ACCEPTED);
+            }
+        }
 
         assertEquals(Status.ACCEPTED, candidates.get(ivan));
         assertEquals(Status.ACCEPTED, candidates.get(helen));
@@ -52,8 +61,26 @@ public class Exercise1 {
         candidates.put(new Person("b", "c", 5), Status.PENDING);
 
         // TODO реализация
-
         Map<Person, Status> expected = new HashMap<>();
+        for (Map.Entry entry : candidates.entrySet()) {
+            Person p = (Person) entry.getKey();
+            int age = p.getAge();
+            if (age > 21) {
+                expected.put(p, Status.ACCEPTED);
+                candidates.replace(p, Status.ACCEPTED);
+            }
+
+        }
+
+        for (Iterator<Map.Entry<Person, Status>> it = candidates.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<Person, Status> entry = it.next();
+            if (entry != null) {
+                if (!entry.getValue().equals(Status.ACCEPTED)) {
+                    it.remove();
+                }
+            }
+        }
+
         expected.put(ivan, Status.ACCEPTED);
         expected.put(helen, Status.ACCEPTED);
         assertEquals(expected, candidates);
@@ -69,13 +96,28 @@ public class Exercise1 {
         candidates.put(ivan, Status.PENDING);
 
         // TODO реализация
-        Status alexStatus = null;
-        Status ivanStatus = null;
-        Status helenStatus = null;
+        Status alexStatus = getStatusFromMap(alex, candidates);
+        Status ivanStatus = getStatusFromMap(ivan, candidates);
+        Status helenStatus = getStatusFromMap(helen, candidates);
 
         assertEquals(Status.PENDING, alexStatus);
         assertEquals(Status.PENDING, ivanStatus);
         assertEquals(Status.UNKNOWN, helenStatus);
+    }
+
+    private Status getStatusFromMap(Person p, Map<Person, Status> candidates) {
+        Status result = Status.UNKNOWN;
+        for (Map.Entry<Person, Status> entry : candidates.entrySet()) {
+            Optional<Status> optionalStatus = Optional.ofNullable(entry.getValue());
+            if (optionalStatus.isPresent()) {
+                if (p.getFirstName().equalsIgnoreCase(entry.getKey().getFirstName())) {
+                    result = entry.getValue();
+                }
+            } else {
+                result = entry.setValue(Status.UNKNOWN);
+            }
+        }
+        return result;
     }
 
     @Test
@@ -89,11 +131,17 @@ public class Exercise1 {
         oldValues.put(dmitry, Status.DECLINED);
         oldValues.put(ivan, Status.ACCEPTED);
 
-        Map<Person, Status> newValues = new HashMap<>();
+        Map<Person, Status> newValues = new HashMap<>(oldValues.size());
         newValues.put(alex, Status.DECLINED);
         newValues.put(helen, Status.PENDING);
 
         // TODO реализация
+        for (Map.Entry<Person, Status> entry : oldValues.entrySet()) {
+
+            if (!newValues.containsKey(entry.getKey())) {
+                newValues.put(entry.getKey(), entry.getValue());
+            }
+        }
 
         assertEquals(Status.DECLINED, newValues.get(alex));
         assertEquals(Status.ACCEPTED, newValues.get(ivan));
