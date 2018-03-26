@@ -37,7 +37,8 @@ public class Exercise1 {
 
         Set<Person> workedAsQa = employees.stream()
                 .filter(employee -> employee.getJobHistory().stream()
-                        .anyMatch(entry -> "QA".equals(entry.getPosition())))
+                        .map(JobHistoryEntry::getPosition)
+                        .anyMatch("QA"::equals))
                 .map(Employee::getPerson)
                 .collect(Collectors.toSet());
 
@@ -73,10 +74,10 @@ public class Exercise1 {
         Map<String, Set<Person>> result = employees.stream()
                 .collect(Collectors.toMap(
                         employee -> employee.getJobHistory().get(0).getPosition(),
-                        employee -> new TreeSet<>(Collections.singletonList(employee.getPerson())),
-                        (BinaryOperator<Set<Person>>) (people, people2) -> {
-                            people.addAll(people2);
-                            return people;
+                        employee -> new HashSet<>(Collections.singletonList(employee.getPerson())),
+                        (personSet1, personSet2) -> {
+                            personSet1.addAll(personSet2);
+                            return personSet1;
                         }));
 
 
@@ -97,7 +98,7 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         Map<String, Set<Person>> result = employees.stream()
-                .collect(Collectors.groupingBy(t -> t.getJobHistory().get(0).getPosition(),
+                .collect(Collectors.groupingBy(employee -> employee.getJobHistory().get(0).getPosition(),
                         Collectors.mapping(Employee::getPerson, Collectors.toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
