@@ -1,12 +1,15 @@
 package streams.part2.exercise;
 
 import lambda.data.Employee;
+import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import lambda.part3.example.Example1;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings({"ConstantConditions", "unused"})
@@ -17,9 +20,14 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        Long hours = null;
+        Long hours = employees.stream()
+                              .map(Employee::getJobHistory)
+                              .flatMap(List::stream)
+                              .filter(jobHistoryEntry -> "EPAM".equals(jobHistoryEntry.getEmployer()))
+                              .mapToLong(JobHistoryEntry::getDuration)
+                              .sum();
 
-        assertEquals(18, hours.longValue());
+        assertEquals(19, hours.longValue());
     }
 
     @Test
@@ -27,12 +35,18 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        Set<Person> workedAsQa = null;
+        Set<Person> workedAsQa = employees.stream()
+                                          .filter(employee -> employee.getJobHistory()
+                                                                      .stream()
+                                                                      .map(JobHistoryEntry::getPosition)
+                                                                      .anyMatch("QA"::equals))
+                                          .map(Employee::getPerson)
+                                          .collect(toSet());
 
         assertEquals(new HashSet<>(Arrays.asList(
-            employees.get(2).getPerson(),
-            employees.get(4).getPerson(),
-            employees.get(5).getPerson()
+                employees.get(2).getPerson(),
+                employees.get(4).getPerson(),
+                employees.get(5).getPerson()
         )), workedAsQa);
     }
 
@@ -41,14 +55,17 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        String result = null;
+        String result = employees.stream()
+                                 .map(Employee::getPerson)
+                                 .map(Person::getFullName)
+                                 .collect(joining("\n"));
 
         assertEquals("Иван Мельников\n"
-                   + "Александр Дементьев\n"
-                   + "Дмитрий Осинов\n"
-                   + "Анна Светличная\n"
-                   + "Игорь Толмачёв\n"
-                   + "Иван Александров", result);
+                + "Александр Дементьев\n"
+                + "Дмитрий Осинов\n"
+                + "Анна Светличная\n"
+                + "Игорь Толмачёв\n"
+                + "Иван Александров", result);
     }
 
     @Test
@@ -57,7 +74,9 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        Map<String, Set<Person>> result = null;
+        Map<String, Set<Person>> result = employees.stream()
+                                                   .collect(toMap(e -> e.getJobHistory().get(0).getPosition(),
+                                                           Exercise1::valueMapper, Exercise1::mergeFunction));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("QA", new HashSet<>(Arrays.asList(employees.get(2).getPerson(), employees.get(5).getPerson())));
@@ -70,13 +89,26 @@ public class Exercise1 {
         assertEquals(expected, result);
     }
 
+    private static Set<Person> valueMapper(Employee employee) {
+        HashSet<Person> result = new HashSet<>();
+        result.add(employee.getPerson());
+        return result;
+    }
+
+    private static Set<Person> mergeFunction(Set<Person> left, Set<Person> right) {
+        left.addAll(right);
+        return left;
+    }
+
     @Test
     @SuppressWarnings("Duplicates")
     public void groupPersonsByFirstPositionUsingGroupingByCollector() {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        Map<String, Set<Person>> result = null;
+        Map<String, Set<Person>> result = employees.stream()
+                                                   .collect(groupingBy(e -> e.getJobHistory().get(0).getPosition(),
+                                                           mapping(Employee::getPerson, toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("QA", new HashSet<>(Arrays.asList(employees.get(2).getPerson(), employees.get(5).getPerson())));
