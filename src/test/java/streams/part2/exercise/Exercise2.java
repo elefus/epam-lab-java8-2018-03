@@ -7,6 +7,7 @@ import org.junit.Test;
 import streams.part2.example.data.PersonEmployerDuration;
 import streams.part2.example.data.PersonEmployerPair;
 
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -202,17 +203,21 @@ public class Exercise2 {
                                 employee.getPerson(),
                                 entry.getEmployer(),
                                 entry.getDuration())))
-                .collect(collectingAndThen(toMap(PersonEmployerDuration::getEmployer, Function.identity(), (personEmployerDuration, personEmployerDuration2) -> {
-                    if (personEmployerDuration.getDuration() > personEmployerDuration2.getDuration()) {
-                        return personEmployerDuration;
-                    } else {
-                        return personEmployerDuration2;
-                    }
-                }), stringPersonEmployerDurationMap -> {
-                    Map<String, Person> result = new HashMap<>();
-                    stringPersonEmployerDurationMap.forEach((key, value) -> result.put(key, value.getPerson()));
-                    return result;
-                }));
+                .collect(
+                        collectingAndThen(
+                                toMap(
+                                        PersonEmployerDuration::getEmployer,
+                                        Function.identity(),
+                                        (arg1, arg2) -> arg1.getDuration() > arg2.getDuration() ? arg1 : arg2),
+                                map ->
+                                        map.entrySet().stream()
+                                                .map(entry ->
+                                                        new HashMap.SimpleEntry<>(
+                                                                entry.getKey(),
+                                                                entry.getValue().getPerson()))
+                                                .collect(Collectors.toMap(
+                                                        AbstractMap.SimpleEntry::getKey,
+                                                        AbstractMap.SimpleEntry::getValue))));
 
         Map<String, Person> expected = new HashMap<>();
         expected.put("EPAM", employees.get(4).getPerson());
