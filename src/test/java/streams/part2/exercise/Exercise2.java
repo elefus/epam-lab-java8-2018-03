@@ -3,9 +3,13 @@ package streams.part2.exercise;
 import lambda.data.Employee;
 import lambda.data.Person;
 import lambda.part3.example.Example1;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -64,11 +68,50 @@ public class Exercise2 {
      *    "T-Systems" -> [ {Анна Светличная 21} ]
      * ]
      */
+
+    @Data
+    @AllArgsConstructor
+    private static class PersonCompanyName {
+        private Person person;
+        private String employer;
+    }
+
+
+    public static Stream<PersonCompanyName> get(Employee employee) {
+        Person person = employee.getPerson();
+        return employee.getJobHistory()
+                       .stream()
+                       .map(jobHistoryEntry -> new PersonCompanyName(person, jobHistoryEntry.getEmployer()));
+    }
+
+    private static HashMap<String, Set<Person>> add(Map<String, Set<Person>> map, PersonCompanyName companyName) {
+        HashMap<String, Set<Person>> res = new HashMap<>(map);
+        res.compute(companyName.getEmployer(), (key, people) -> {
+            people = people != null ? people : new HashSet<>();
+            people.add(companyName.getPerson());
+            return people;
+        });
+        return res;
+    }
+
+    private static HashMap<String, Set<Person>> mergeMaps(HashMap<String, Set<Person>> left, HashMap<String, Set<Person>> right) {
+        HashMap<String, Set<Person>> result = new HashMap<>(left);
+        right.forEach((position, persons) -> result.merge(position, persons, (leftPersons, rightPersons) -> {
+            leftPersons.addAll(rightPersons);
+            return leftPersons;
+        }));
+        return result;
+    }
+
+
     @Test
     public void employersStuffList() {
         List<Employee> employees = Example1.getEmployees();
 
-        Map<String, Set<Person>> result = null;
+        Map<String, Set<Person>> result = employees.stream()
+                                                   .flatMap(Exercise2::get)
+                                                   .collect(Collectors.groupingBy(PersonCompanyName::getEmployer,
+                                                            Collectors.mapping(PersonCompanyName::getPerson, Collectors.toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("yandex", new HashSet<>(Collections.singletonList(employees.get(2).getPerson())));
