@@ -1,15 +1,21 @@
 package streams.part2.exercise;
 
 import lambda.data.Employee;
+import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import lambda.part3.example.Example1;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings({"ConstantConditions", "unused"})
 public class Exercise1 {
 
     @Test
@@ -17,9 +23,32 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        Long hours = null;
-
-        assertEquals(18, hours.longValue());
+        // начнём с конца - результатом д.б. Лонг тогда терминальной операцией у меня может быть :
+        // .mapToLong(), или sum()... но пока не точно
+        // чтобы получить её в результирующем стриме у меня д.б. Лист Long, то есть Durationов,
+        // duration получается из
+        // JobHistoryEntry::getDuration
+        // .map()
+        // - это список то есть перед тем как получить лист Durationов я должен
+        // преобразовать лист JobHistoryEntry в JobHistoryEntry в которых Position.equals("EPAM")
+        // .filter(entry -> "EPAM".equals(entry.getPosition())
+        // чтобы получить список всех entry для фильтра их нужно вытащить из JobHistory - для каждого employee
+        // то есть получить простой список одних элементов из вложенного списка списков другого типа
+        // .flatMap(JobJistory::getJobHistoryEntry)
+        // чтобы получить список JobHistory нам нужен список employee из элементов которого получается вложенный
+        // .map(Employee::getJobHistory)
+        // ну и для того чтобы использовать сущность как стрим надо сделать её стримом
+        // .stream()
+        Long
+                hours =
+                employees.stream()
+                         .map(Employee::getJobHistory)
+                         .flatMap(jobHistoryEntries -> jobHistoryEntries.stream()
+                                                                        .filter(jobHistoryEntry -> "EPAM".equals(
+                                                                                jobHistoryEntry.getPosition())))
+                         .mapToLong(JobHistoryEntry::getDuration)
+                         .sum();
+        assertEquals(19, hours.longValue());
     }
 
     @Test
@@ -52,7 +81,6 @@ public class Exercise1 {
     }
 
     @Test
-    @SuppressWarnings("Duplicates")
     public void groupPersonsByFirstPositionUsingToMap() {
         List<Employee> employees = Example1.getEmployees();
 
@@ -71,7 +99,6 @@ public class Exercise1 {
     }
 
     @Test
-    @SuppressWarnings("Duplicates")
     public void groupPersonsByFirstPositionUsingGroupingByCollector() {
         List<Employee> employees = Example1.getEmployees();
 
