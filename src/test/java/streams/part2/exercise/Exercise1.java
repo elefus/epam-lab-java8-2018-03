@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -68,14 +69,23 @@ public class Exercise1 {
 
         // TODO реализация
         // в конце получаем отфильтрованный сет из Personов
-        // --------.set....()
-        // перед этим нужно иметь отфильтрованный список Personoв
-        //---------.filter()
-        // а перед фильтром нужно иметь список Personoв, который будем фильтровать
-        // ---------.map()
-        //а для его получения нужно вытащить их из
-        // Employee::getPerson
-        Set<Person> workedAsQa = null;
+        // --------.collect(Collectors.toSet()
+        // перед этим нужно иметь список Personoв
+        //---------.map(Employee::getPerson)
+        // а перед ним нужно иметь список Employee, который был создан из фильтра, employee -> по стриму
+        // employee.getJobHistory.stream().map(JobHistory::getJobHistoryEntry).filter(JHentry -> "QA".equals(JHentry
+        // .getPosition()))
+        // 
+
+        Set<Person>
+                workedAsQa =
+                employees.stream()
+                         .filter(employee -> employee.getJobHistory()
+                                                     .stream()
+                                                     .anyMatch(jobHistoryEntry -> "QA".equalsIgnoreCase
+                                                             (jobHistoryEntry.getPosition())))
+                         .map(Employee::getPerson)
+                         .collect(Collectors.toSet());
 
         assertEquals(new HashSet<>(Arrays.asList(
             employees.get(2).getPerson(),
