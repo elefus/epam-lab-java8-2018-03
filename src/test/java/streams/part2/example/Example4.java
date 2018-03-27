@@ -1,14 +1,21 @@
 package streams.part2.example;
 
 import lambda.data.Employee;
+import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import lambda.part3.example.Example1;
 import org.junit.Test;
+import streams.part2.example.data.PersonDurationPair;
+import streams.part2.example.data.PersonPositionDuration;
+import streams.part2.example.data.PersonPositionPair;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.*;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ConstantConditions")
@@ -59,7 +66,23 @@ public class Example4 {
     public void getTheCoolestByPositionUsingToMap() {
         List<Employee> employees = Example1.getEmployees();
 
-        Map<String, Person> coolest = null;
+        Map<String, Person> coolest = employees.stream()
+                                               .flatMap(employee -> employee.getJobHistory()
+                                                                            .stream()
+                                                                            .collect(toMap(JobHistoryEntry::getPosition,
+                                                                                    entry -> new PersonDurationPair(employee
+                                                                                            .getPerson(), entry.getDuration()),
+                                                                                    (pair1, pair2) -> new PersonDurationPair(employee
+                                                                                            .getPerson(), pair1
+                                                                                            .getDuration() + pair2.getDuration())))
+                                                                            .entrySet()
+                                                                            .stream())
+                                               .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (entry1, entry2) -> entry1
+                                                       .getDuration() > entry2.getDuration() ? entry1 : entry2))
+                                               .entrySet()
+                                               .stream()
+                                               .collect(toMap(Map.Entry::getKey, entry -> entry.getValue()
+                                                                                               .getPerson()));
 
         assertEquals(prepareExpected(employees), coolest);
     }
@@ -68,7 +91,18 @@ public class Example4 {
     public void getTheCoolestByPositionUsingGroupingBy() {
         List<Employee> employees = Example1.getEmployees();
 
-        Map<String, Person> coolest = null;
+        Map<String, Person> coolest = employees.stream()
+                                               .flatMap(employee -> employee.getJobHistory()
+                                                                            .stream()
+                                                                            .collect(groupingBy(JobHistoryEntry::getPosition, summingInt(JobHistoryEntry::getDuration)))
+                                                                            .entrySet()
+                                                                            .stream()
+                                                                            .map(entry -> new PersonPositionDuration(employee.getPerson(), entry.getKey(), entry.getValue())))
+                                               .collect(groupingBy(PersonPositionDuration::getPosition,
+                                                        collectingAndThen(maxBy(comparingInt(PersonPositionDuration::getDuration)),
+                                                                          entry -> entry.map(PersonPositionDuration::getPerson)
+                                                                                        .orElseThrow(IllegalStateException::new))));
+
 
         assertEquals(prepareExpected(employees), coolest);
     }
