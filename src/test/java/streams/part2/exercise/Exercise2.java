@@ -211,13 +211,9 @@ public class Exercise2 {
                                         (arg1, arg2) -> arg1.getDuration() > arg2.getDuration() ? arg1 : arg2),
                                 map ->
                                         map.entrySet().stream()
-                                                .map(entry ->
-                                                        new HashMap.SimpleEntry<>(
-                                                                entry.getKey(),
-                                                                entry.getValue().getPerson()))
                                                 .collect(Collectors.toMap(
-                                                        AbstractMap.SimpleEntry::getKey,
-                                                        AbstractMap.SimpleEntry::getValue))));
+                                                        entry -> entry.getKey(),
+                                                        entry -> entry.getValue().getPerson()))));
 
         Map<String, Person> expected = new HashMap<>();
         expected.put("EPAM", employees.get(4).getPerson());
