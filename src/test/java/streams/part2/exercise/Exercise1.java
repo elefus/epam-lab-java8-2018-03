@@ -24,21 +24,32 @@ public class Exercise1 {
 
         // TODO реализация
         // начнём с конца - результатом д.б. Лонг тогда терминальной операцией у меня может быть :
-        // .mapToLong(), или sum()... но пока не точно
+
+        // -----------.mapToLong(), или sum()... но пока не точно
+
         // чтобы получить её в результирующем стриме у меня д.б. Лист Long, то есть Durationов,
         // duration получается из
         // JobHistoryEntry::getDuration
-        // .map()
+
+        // ----------.map()
+
         // - это список то есть перед тем как получить лист Durationов я должен
         // преобразовать лист JobHistoryEntry в JobHistoryEntry в которых Position.equals("EPAM")
-        // .filter(entry -> "EPAM".equals(entry.getPosition())
+
+        // ---------.filter(entry -> "EPAM".equals(entry.getPosition())
+
         // чтобы получить список всех entry для фильтра их нужно вытащить из JobHistory - для каждого employee
-        // то есть получить простой список одних элементов из вложенного списка списков другого типа
-        // .flatMap(JobJistory::getJobHistoryEntry)
+        // то есть получить простой список одних элементов из вложенного (списка списков) другого типа
+
+        // ---------.flatMap(JobJistory::getJobHistoryEntry)
+
         // чтобы получить список JobHistory нам нужен список employee из элементов которого получается вложенный
-        // .map(Employee::getJobHistory)
+
+        // --------.map(Employee::getJobHistory)
+
         // ну и для того чтобы использовать сущность как стрим надо сделать её стримом
-        // .stream()
+
+        // -------.stream()
         Long
                 hours =
                 employees.stream()
@@ -56,7 +67,15 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        Set<Person> workedAsQa = null;
+        // в конце получаем отфильтрованный сет из Personов
+        // --------.set....()
+        // перед этим нужно иметь отфильтрованный список Personoв
+        //---------.filter()
+        // а перед фильтром нужно иметь список Personoв, который будем фильтровать
+        // ---------.map()
+        //а для его получения нужно вытащить их из
+        // Employee::getPerson
+        Set<Person> workedAsQa = employees.stream()...toSet();
 
         assertEquals(new HashSet<>(Arrays.asList(
             employees.get(2).getPerson(),
