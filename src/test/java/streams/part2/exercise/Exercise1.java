@@ -56,7 +56,7 @@ public class Exercise1 {
                          .map(Employee::getJobHistory)
                          .flatMap(jobHistoryEntries -> jobHistoryEntries.stream()
                                                                         .filter(jobHistoryEntry -> "EPAM".equals(
-                                                                                jobHistoryEntry.getPosition())))
+                                                                                jobHistoryEntry.getEmployer())))
                          .mapToLong(JobHistoryEntry::getDuration)
                          .sum();
         assertEquals(19, hours.longValue());
@@ -75,7 +75,7 @@ public class Exercise1 {
         // ---------.map()
         //а для его получения нужно вытащить их из
         // Employee::getPerson
-        Set<Person> workedAsQa = employees.stream()...toSet();
+        Set<Person> workedAsQa = null;
 
         assertEquals(new HashSet<>(Arrays.asList(
             employees.get(2).getPerson(),
