@@ -27,14 +27,14 @@ public class Exercise2 {
     // TODO - возвращает новый предикат, являющийся отрицанием исходного
     // TODO - при реализации использовать логический оператор !
     private Predicate<Person> negateUsingLogicalOperator(Predicate<Person> predicate) {
-        return predicate.negate();
+        return person->!predicate.test(person);
     }
 
     // TODO метод (Person -> boolean, Person -> boolean) -> (Person -> boolean)
     // TODO - возвращает новый предикат, объединяющий исходные с помощью операции "AND"
     // TODO - при реализации использовать логический оператор &&
     private Predicate<Person> andUsingLogicalOperator(Predicate<Person> left, Predicate<Person> right) {
-        return left.and(right);
+        return person -> left.test(person) && right.test(person);
     }
 
     @Test
