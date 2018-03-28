@@ -14,7 +14,7 @@ public class Exercise3 {
         int countNumbers = 10;
 
         String result = IntStream.iterate(1, value -> value + 2)
-                                 .limit(10)
+                                 .limit(countNumbers)
                                  .mapToObj(String::valueOf)
                                  .collect(Collectors.joining(" "));
 
