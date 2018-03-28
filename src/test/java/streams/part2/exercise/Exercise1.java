@@ -73,9 +73,7 @@ public class Exercise1 {
         // перед этим нужно иметь список Personoв
         //---------.map(Employee::getPerson)
         // а перед ним нужно иметь список Employee, который был создан из фильтра, employee -> по стриму
-        // employee.getJobHistory.stream().map(JobHistory::getJobHistoryEntry).filter(JHentry -> "QA".equals(JHentry
-        // .getPosition()))
-        // 
+        // employee.getJobHistory.stream().anyMatch(getJobHistoryEntry::getJobHistoryEntry.getEmployer()=="QA")
 
         Set<Person>
                 workedAsQa =
@@ -99,7 +97,16 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        String result = null;
+        // в конце должно получиться
+        // ----------.collect(Collection.joining("\n"))
+        // получаться это должно получиться из листа стрингов=getFullName()
+        // ----------.map(Person::getFullName)
+        // список людей получается из списка сотрудников
+        // ----------.map(Employee::getPerson)
+        // ----------.stream()
+        String
+                result =
+                employees.stream().map(Employee::getPerson).map(Person::getFullName).collect(Collectors.joining("\n"));
 
         assertEquals("Иван Мельников\n"
                    + "Александр Дементьев\n"
