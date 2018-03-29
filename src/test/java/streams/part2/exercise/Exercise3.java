@@ -2,6 +2,9 @@ package streams.part2.exercise;
 
 import org.junit.Test;
 
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.joining;
 import static org.junit.Assert.assertEquals;
 
 public class Exercise3 {
@@ -29,6 +32,7 @@ public class Exercise3 {
                 .map(source::codePointAt)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+
 
         assertEquals("acegikm", result);
     }
