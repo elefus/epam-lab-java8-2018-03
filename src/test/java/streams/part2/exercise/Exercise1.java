@@ -5,6 +5,7 @@ import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import lambda.part3.example.Example1;
 import org.junit.Test;
+import streams.part2.example.data.PersonPositionPair;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -85,11 +87,9 @@ public class Exercise1 {
                          .map(Employee::getPerson)
                          .collect(Collectors.toSet());
 
-        assertEquals(new HashSet<>(Arrays.asList(
-            employees.get(2).getPerson(),
-            employees.get(4).getPerson(),
-            employees.get(5).getPerson()
-        )), workedAsQa);
+        assertEquals(new HashSet<>(Arrays.asList(employees.get(2).getPerson(),
+                                                 employees.get(4).getPerson(),
+                                                 employees.get(5).getPerson())), workedAsQa);
     }
 
     @Test
@@ -108,12 +108,8 @@ public class Exercise1 {
                 result =
                 employees.stream().map(Employee::getPerson).map(Person::getFullName).collect(Collectors.joining("\n"));
 
-        assertEquals("Иван Мельников\n"
-                   + "Александр Дементьев\n"
-                   + "Дмитрий Осинов\n"
-                   + "Анна Светличная\n"
-                   + "Игорь Толмачёв\n"
-                   + "Иван Александров", result);
+        assertEquals("Иван Мельников\n" + "Александр Дементьев\n" + "Дмитрий Осинов\n" + "Анна Светличная\n" +
+                     "Игорь Толмачёв\n" + "Иван Александров", result);
     }
 
     @Test
@@ -121,17 +117,34 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        Map<String, Set<Person>> result = null;
+        // в конце должна получиться конструкция JobhistoryEntry::getPosition
+        // перед этим должен быть список employee
+
+        Map<String, Set<Person>>
+                result =
+                employees.stream().flatMap(Exercise1::getPosPersonStream).reduce(null, Exercise1::addToMap);
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("QA", new HashSet<>(Arrays.asList(employees.get(2).getPerson(), employees.get(5).getPerson())));
         expected.put("dev", Collections.singleton(employees.get(0).getPerson()));
-        expected.put("tester", new HashSet<>(Arrays.asList(
-            employees.get(1).getPerson(),
-            employees.get(3).getPerson(),
-            employees.get(4).getPerson()))
-        );
+        expected.put("tester",
+                     new HashSet<>(Arrays.asList(employees.get(1).getPerson(),
+                                                 employees.get(3).getPerson(),
+                                                 employees.get(4).getPerson())));
         assertEquals(expected, result);
+    }
+
+    private static PersonPositionPair addToMap(PersonPositionPair personPositionPair,
+                                               PersonPositionPair personPositionPair1) {
+        return null;
+    }
+
+    private static Stream<? extends PersonPositionPair> getPosPersonStream(Employee employee) {
+        return employee.getJobHistory()
+                       .stream()
+                       .limit(1)
+                       .map(jobHistoryEntry -> new PersonPositionPair(employee.getPerson(),
+                                                                      jobHistoryEntry.getPosition()));
     }
 
     @Test
@@ -144,11 +157,10 @@ public class Exercise1 {
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("QA", new HashSet<>(Arrays.asList(employees.get(2).getPerson(), employees.get(5).getPerson())));
         expected.put("dev", Collections.singleton(employees.get(0).getPerson()));
-        expected.put("tester", new HashSet<>(Arrays.asList(
-            employees.get(1).getPerson(),
-            employees.get(3).getPerson(),
-            employees.get(4).getPerson()))
-        );
+        expected.put("tester",
+                     new HashSet<>(Arrays.asList(employees.get(1).getPerson(),
+                                                 employees.get(3).getPerson(),
+                                                 employees.get(4).getPerson())));
         assertEquals(expected, result);
     }
 }
