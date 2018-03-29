@@ -1,11 +1,14 @@
 package streams.part2.exercise;
 
 import lambda.data.Employee;
+import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import lambda.part3.example.Example1;
 import org.junit.Test;
+import static java.util.AbstractMap.SimpleEntry;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -68,7 +71,18 @@ public class Exercise2 {
     public void employersStuffList() {
         List<Employee> employees = Example1.getEmployees();
 
-        Map<String, Set<Person>> result = null;
+        Map<String, Set<Person>> result = employees
+                .stream()
+                .collect(
+                        HashMap::new,
+                        (acc, e) -> e.getJobHistory().forEach(jEntry -> {
+                            String empName = jEntry.getEmployer();
+                            if (acc.containsKey(empName))
+                                acc.get(empName).add(e.getPerson());
+                            else
+                                acc.put(empName, new HashSet<>(Collections.singleton(e.getPerson())));
+                        }),
+                        (s1, s2) -> s1.putAll(s2));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("yandex", new HashSet<>(Collections.singletonList(employees.get(2).getPerson())));
@@ -142,7 +156,18 @@ public class Exercise2 {
     public void indexByFirstEmployer() {
         List<Employee> employees = Example1.getEmployees();
 
-        Map<String, Set<Person>> result = null;
+        Map<String, Set<Person>> result = employees
+                .stream()
+                .collect(
+                        HashMap::new,
+                        (acc, e) -> {
+                                String firstEmployerName = e.getJobHistory().get(0).getEmployer();
+                                if (acc.containsKey(firstEmployerName))
+                                    acc.get(firstEmployerName).add(e.getPerson());
+                                else
+                                    acc.put(firstEmployerName, new HashSet<>(Collections.singleton(e.getPerson())));
+                        },
+                        (s1, s2) -> s1.putAll(s2));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("yandex", new HashSet<>(Collections.singletonList(employees.get(2).getPerson())));
@@ -165,8 +190,26 @@ public class Exercise2 {
     @Test
     public void greatestExperiencePerEmployer() {
         List<Employee> employees = Example1.getEmployees();
-
-        Map<String, Person> collect = null;
+        Map<String, Person> collect = employees
+                .stream()
+                .collect(() -> new HashMap<String, SimpleEntry<Person, Integer>>(),
+                        (acc, e) -> e.getJobHistory().forEach(jEntry -> {
+                            if (acc.containsKey(jEntry.getEmployer())) {
+                                SimpleEntry<Person, Integer> emp = acc.get(jEntry.getEmployer());
+                                acc.put(jEntry.getEmployer(), emp.getValue() <= jEntry.getDuration() ? new SimpleEntry<>(e.getPerson(), jEntry.getDuration()) :  emp);
+                            } else {
+                                acc.put(jEntry.getEmployer(), new SimpleEntry<>(e.getPerson(), jEntry.getDuration()));
+                            }
+                        }), (m1, m2) -> m2.forEach((k, v) -> {
+                            SimpleEntry<Person, Integer> e = m1.get(k);
+                            m1.put(k, e == null ? v : v.getValue() > e.getValue() ? new SimpleEntry<>(v) : (SimpleEntry<Person, Integer>)e);
+                        }))
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        e -> e.getKey(),
+                        e -> e.getValue().getKey(),
+                        (v1, v2) -> v1));
 
         Map<String, Person> expected = new HashMap<>();
         expected.put("EPAM", employees.get(4).getPerson());
