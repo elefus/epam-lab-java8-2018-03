@@ -101,7 +101,7 @@ public class Example4 {
                                                .collect(groupingBy(PersonPositionDuration::getPosition,
                                                         collectingAndThen(maxBy(comparingInt(PersonPositionDuration::getDuration)),
                                                                           entry -> entry.map(PersonPositionDuration::getPerson)
-                                                                                        .get())));
+                                                                                        .orElseThrow(IllegalStateException::new))));
 
 
         assertEquals(prepareExpected(employees), coolest);
