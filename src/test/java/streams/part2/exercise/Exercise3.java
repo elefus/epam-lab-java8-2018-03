@@ -29,8 +29,9 @@ public class Exercise3 {
         String result = IntStream
                 .range(0, source.length())
                 .filter(value -> value % 2 == 0)
-                .mapToObj(value -> source.substring(value, value + 1))
-                .collect(joining());
+                .map(source::codePointAt)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
 
         assertEquals("acegikm", result);
     }
