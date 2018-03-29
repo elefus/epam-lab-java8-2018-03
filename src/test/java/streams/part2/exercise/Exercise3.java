@@ -2,9 +2,6 @@ package streams.part2.exercise;
 
 import org.junit.Test;
 
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.joining;
 import static org.junit.Assert.assertEquals;
 
 public class Exercise3 {
