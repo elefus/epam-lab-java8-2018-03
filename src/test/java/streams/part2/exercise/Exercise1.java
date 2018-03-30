@@ -116,13 +116,14 @@ public class Exercise1 {
     public void groupPersonsByFirstPositionUsingToMap() {
         List<Employee> employees = Example1.getEmployees();
 
-        // TODO реализация
-        // в конце должна получиться конструкция JobhistoryEntry::getPosition
-        // перед этим должен быть список employee
+        // TODO реализация}
+
 
         Map<String, Set<Person>>
                 result =
-                employees.stream().flatMap(Exercise1::getPosPersonStream).reduce(null, Exercise1::addToMap);
+                employees.stream()
+                         .flatMap(Exercise1::firstPositionAndPerson)
+                         .reduce(new HashMap<>(), Exercise1::putCustomPersonPosPairToMap, Exercise1::customSquashMaps);
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("QA", new HashSet<>(Arrays.asList(employees.get(2).getPerson(), employees.get(5).getPerson())));
@@ -134,12 +135,37 @@ public class Exercise1 {
         assertEquals(expected, result);
     }
 
-    private static PersonPositionPair addToMap(PersonPositionPair personPositionPair,
-                                               PersonPositionPair personPositionPair1) {
-        return null;
+    public static Stream<PersonPositionPair> firstPositionAndPerson(Employee emp) {
+        Person person = emp.getPerson();
+        return emp.getJobHistory()
+                  .stream()
+                  .limit(1)
+                  .map(jobHistoryEntry -> new PersonPositionPair(person, jobHistoryEntry.getPosition()));
     }
 
-    private static Stream<? extends PersonPositionPair> getPosPersonStream(Employee employee) {
+    private static HashMap<String, Set<Person>> customSquashMaps(HashMap<String, Set<Person>> left,
+                                                                 HashMap<String, Set<Person>> right) {
+        HashMap<String, Set<Person>> result = new HashMap<>(left);
+        right.forEach((position, persons) -> result.merge(position, persons, (leftPersons, rightPersons) -> {
+            leftPersons.addAll(rightPersons);
+            return leftPersons;
+        }));
+        return result;
+    }
+
+    private static HashMap<String, Set<Person>> putCustomPersonPosPairToMap(Map<String, Set<Person>> map,
+                                                                            PersonPositionPair pair) {
+        HashMap<String, Set<Person>> result = new HashMap<>(map);
+        result.compute(pair.getPosition(), (position, persons) -> {
+            persons = persons == null ? new HashSet<>() : persons;
+            persons.add(pair.getPerson());
+            return persons;
+
+        });
+        return result;
+    }
+
+    private static Stream<? extends PersonPositionPair> getCustomPosPersonStream(Employee employee) {
         return employee.getJobHistory()
                        .stream()
                        .limit(1)
@@ -152,7 +178,13 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         // TODO реализация
-        Map<String, Set<Person>> result = null;
+        Map<String, Set<Person>>
+                result =
+                employees.stream()
+                         .flatMap(Exercise1::getCustomPosPersonStream)
+                         .collect(Collectors.groupingBy(PersonPositionPair::getPosition,
+                                                        Collectors.mapping(PersonPositionPair::getPerson,
+                                                                           Collectors.toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("QA", new HashSet<>(Arrays.asList(employees.get(2).getPerson(), employees.get(5).getPerson())));
