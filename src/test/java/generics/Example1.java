@@ -21,14 +21,14 @@ public class Example1 {
         System.out.println(indexedStringType.getActualTypeArguments()[0]);
         System.out.println(indexedStringType.getActualTypeArguments()[1]);
 
-        ParameterizedType listFieldType = (ParameterizedType)IndexedString.class.getDeclaredField("list").getGenericType();
-        System.out.println(listFieldType.getActualTypeArguments()[0]);
+//        ParameterizedType listFieldType = (ParameterizedType)IndexedString.class.getDeclaredField("list").getGenericType();
+//        System.out.println(listFieldType.getActualTypeArguments()[0]);
 
-        ParameterizedType staticMethodReturnType = (ParameterizedType)IndexedString.class.getDeclaredMethod("staticGenericList").getGenericReturnType();
-        System.out.println(staticMethodReturnType.getActualTypeArguments()[0]);
-
-        ParameterizedType nonStaticMethodReturnType = (ParameterizedType)IndexedString.class.getDeclaredMethod("nonStaticGenericList").getGenericReturnType();
-        System.out.println(nonStaticMethodReturnType.getActualTypeArguments()[0]);
+//        ParameterizedType staticMethodReturnType = (ParameterizedType)IndexedString.class.getDeclaredMethod("staticGenericList").getGenericReturnType();
+//        System.out.println(staticMethodReturnType.getActualTypeArguments()[0]);
+//
+//        ParameterizedType nonStaticMethodReturnType = (ParameterizedType)IndexedString.class.getDeclaredMethod("nonStaticGenericList").getGenericReturnType();
+//        System.out.println(nonStaticMethodReturnType.getActualTypeArguments()[0]);
     }
 
     private static class Pair<T1, T2> {
