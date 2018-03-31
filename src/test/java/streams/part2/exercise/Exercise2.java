@@ -7,7 +7,6 @@ import org.junit.Test;
 import streams.part2.example.data.PersonEmployerDuration;
 import streams.part2.example.data.PersonEmployerPair;
 
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,8 +17,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ConstantConditions")
@@ -84,13 +82,9 @@ public class Exercise2 {
         Map<String, Set<Person>> result = employees.stream()
                 .flatMap(employee -> employee.getJobHistory().stream()
                         .map(entry -> new PersonEmployerPair(employee.getPerson(), entry.getEmployer())))
-                .collect(toMap(
+                .collect(groupingBy(
                         PersonEmployerPair::getEmployer,
-                        positionPair -> new HashSet<>(Collections.singletonList(positionPair.getPerson())),
-                        (o1, o2) -> {
-                            o1.addAll(o2);
-                            return o1;
-                        }));
+                        mapping(PersonEmployerPair::getPerson, Collectors.toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("yandex", new HashSet<>(Collections.singletonList(employees.get(2).getPerson())));
@@ -166,13 +160,9 @@ public class Exercise2 {
 
         Map<String, Set<Person>> result = employees.stream()
                 .map(employee -> new PersonEmployerPair(employee.getPerson(), employee.getJobHistory().get(0).getEmployer()))
-                .collect(toMap(
+                .collect(groupingBy(
                         PersonEmployerPair::getEmployer,
-                        positionPair -> new HashSet<>(Collections.singletonList(positionPair.getPerson())),
-                        (o1, o2) -> {
-                            o1.addAll(o2);
-                            return o1;
-                        }));
+                        mapping(PersonEmployerPair::getPerson, Collectors.toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("yandex", new HashSet<>(Collections.singletonList(employees.get(2).getPerson())));
