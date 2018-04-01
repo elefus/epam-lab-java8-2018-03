@@ -5,13 +5,17 @@ import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import lambda.part3.example.Example1;
 import org.junit.Test;
-import streams.part2.example.data.PersonPositionPair;
 
-import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import static java.util.stream.Collectors.*;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings({"ConstantConditions", "unused"})
@@ -40,7 +44,7 @@ public class Exercise1 {
                         .map(JobHistoryEntry::getPosition)
                         .anyMatch("QA"::equals))
                 .map(Employee::getPerson)
-                .collect(Collectors.toSet());
+                .collect(toSet());
 
         assertEquals(new HashSet<>(Arrays.asList(
             employees.get(2).getPerson(),
@@ -56,7 +60,7 @@ public class Exercise1 {
         String result = employees.stream()
                 .map(Employee::getPerson)
                 .map(Person::getFullName)
-                .collect(Collectors.joining("\n"));
+                .collect(joining("\n"));
 
         assertEquals("Иван Мельников\n"
                    + "Александр Дементьев\n"
@@ -72,13 +76,9 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         Map<String, Set<Person>> result = employees.stream()
-                .collect(Collectors.toMap(
+                .collect(groupingBy(
                         employee -> employee.getJobHistory().get(0).getPosition(),
-                        employee -> new HashSet<>(Collections.singletonList(employee.getPerson())),
-                        (personSet1, personSet2) -> {
-                            personSet1.addAll(personSet2);
-                            return personSet1;
-                        }));
+                        mapping(Employee::getPerson, toSet())));
 
 
         Map<String, Set<Person>> expected = new HashMap<>();
@@ -98,8 +98,8 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         Map<String, Set<Person>> result = employees.stream()
-                .collect(Collectors.groupingBy(employee -> employee.getJobHistory().get(0).getPosition(),
-                        Collectors.mapping(Employee::getPerson, Collectors.toSet())));
+                .collect(groupingBy(employee -> employee.getJobHistory().get(0).getPosition(),
+                        mapping(Employee::getPerson, toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("QA", new HashSet<>(Arrays.asList(employees.get(2).getPerson(), employees.get(5).getPerson())));
