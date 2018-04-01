@@ -76,9 +76,13 @@ public class Exercise1 {
         List<Employee> employees = Example1.getEmployees();
 
         Map<String, Set<Person>> result = employees.stream()
-                .collect(groupingBy(
+                .collect(toMap(
                         employee -> employee.getJobHistory().get(0).getPosition(),
-                        mapping(Employee::getPerson, toSet())));
+                        employee -> new HashSet<>(Collections.singletonList(employee.getPerson())),
+                        (personSet1, personSet2) -> {
+                            personSet1.addAll(personSet2);
+                            return personSet1;
+                        }));
 
 
         Map<String, Set<Person>> expected = new HashMap<>();
