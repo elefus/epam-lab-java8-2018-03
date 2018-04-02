@@ -69,7 +69,7 @@ public class Exercise2 {
 
         Double expected = employees.stream()
                                    .map(Employee::getJobHistory)
-                                   .flatMapToDouble(jh -> DoubleStream.of(jh.get(0)
+                                   .flatMapToDouble(jh -> DoubleStream.of(jh.get(jh.size()-1)
                                                                             .getDuration() > CONDITION_OF_INCREMENTATION ? SALARY * INCREMENT : SALARY))
                                    .sum();
 
