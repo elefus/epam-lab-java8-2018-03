@@ -21,7 +21,7 @@ public class Exercise4 {
      */
     private List<String> getFrequentlyOccurringWords(String text, int numberWords) {
         Comparator<Map.Entry<String, Long>> frequency = Map.Entry.comparingByValue(reverseOrder());
-        Comparator<Map.Entry<String, Long>> lexicography = frequency.thenComparing(Map.Entry.comparingByKey());
+        Comparator<Map.Entry<String, Long>> lexicography = Map.Entry.comparingByKey();
         return Arrays.stream(text.toLowerCase().split(" "))
                      .collect(groupingBy(Function.identity(), counting()))
                      .entrySet()
