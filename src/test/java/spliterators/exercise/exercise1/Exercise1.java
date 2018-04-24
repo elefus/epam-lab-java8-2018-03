@@ -21,6 +21,14 @@ public class Exercise1 {
         assertEquals(Arrays.asList("consectetur", "faucibus", "ipsum", "lorem", "adipiscing", "amet", "dolor", "eget", "elit", "mi"), result);
     }
 
+    /**
+     * Выбирает из текста наиболее часто встречающиеся слова.
+     * Подсчет слов выполняется без учета их регистра, т.е. "Привет", "привет", "пРиВеТ" - одно и то же слово.
+     * Если некоторые слова имеют одинаковую частоту, то в выходном списке они упорядочиваются в лексикографическом порядке.
+     * @param count Количество наиболее часто встречающихся слов, которые необходимо отобрать.
+     * @param words Анализируемые слова.
+     * @return Список отобранных слов (в нижнем регистре).
+     */
     private List<String> getMostPopularWords(int count, String... words) {
         throw new UnsupportedOperationException();
     }
