@@ -1,8 +1,8 @@
 package spliterators.example2;
 
-public class IndexedPair<T> extends Pair<Long, T> {
+public class IndexedValue<T> extends Pair<Long, T> {
 
-    public IndexedPair(Long index, T value) {
+    public IndexedValue(Long index, T value) {
         super(index, value);
     }
 
