@@ -1,6 +1,5 @@
 package lambda.data;
 
-import javax.xml.ws.BindingType;
 import java.io.Serializable;
 import java.util.Objects;
 
