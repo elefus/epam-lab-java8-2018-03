@@ -3,25 +3,26 @@ package spliterators.exercise.exercise2;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
 
+/**
+ * Сплитератор, оборачивающий прямоугольную матрицу int[][]
+ * Обходит элементы слева-направо, сверху-вниз
+ * Деление "нечестное" - по строкам
+ */
 public class UnfairRectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
     /**
-     * 0 1 2 3 4
-     * ---------
-     * 2 3 4 5 6
-     * 2 4 5 6 7
-     *
-     * 0 1 2 3 4
-     * 2 3 / 4 5 6
-     * 2 4 5 6 7
+     *  0  1  2  3  4
+     * -------------
+     *  5  6  7  8  9
+     * 10 11 12 13 14
      */
     public UnfairRectangleSpliterator(int[][] data) {
-        this();
+        this(data, 0, data.length);
     }
 
-    private UnfairRectangleSpliterator() {
-        super(0, 0);
-        throw new UnsupportedOperationException();
+    private UnfairRectangleSpliterator(int[][] data, int from, int to) {
+        super(data.length, SIZED | IMMUTABLE | NONNULL | ORDERED);
+
     }
 
     @Override
