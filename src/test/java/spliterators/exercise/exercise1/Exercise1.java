@@ -56,8 +56,8 @@ public class Exercise1 {
                                                         : (valu1 > value2 ? -1 : 1);
             }
         }
-        Arrays.stream(Arrays.toString(words).replaceAll(",", "").split(" "))
-              .collect(Collectors.groupingBy(String::toString, Collectors.counting()))
+        Arrays.stream(Arrays.toString(words).replaceAll(",", "").replaceAll("\\[", "").split(" "))
+              .collect(Collectors.groupingBy(s -> s.toString().toLowerCase(), Collectors.counting()))
               .entrySet()
               .stream()
               .sorted(new MyStringMapComparator())
@@ -65,8 +65,8 @@ public class Exercise1 {
                       stringLongEntry.getKey() + " = " + stringLongEntry.getValue()))
               .count();
 
-        return Arrays.stream(Arrays.toString(words).replaceAll(",", "").split(" "))
-                     .collect(Collectors.groupingBy(String::toString, Collectors.counting()))
+        return Arrays.stream(Arrays.toString(words).replaceAll(",", "").replaceAll("\\[", "").split(" "))
+                     .collect(Collectors.groupingBy(s -> s.toString().toLowerCase(), Collectors.counting()))
                      .entrySet()
                      .stream()
                      .sorted(new MyStringMapComparator())
