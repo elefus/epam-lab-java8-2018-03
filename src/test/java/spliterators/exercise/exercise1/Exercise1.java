@@ -4,7 +4,12 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 public class Exercise1 {
@@ -30,6 +35,16 @@ public class Exercise1 {
      * @return Список отобранных слов (в нижнем регистре).
      */
     private List<String> getMostPopularWords(int count, String... words) {
-        throw new UnsupportedOperationException();
+        return Arrays.stream(words)
+                .map(String::toLowerCase)
+                .collect(groupingBy(Function.identity(), counting()))
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue()
+                        .reversed()
+                        .thenComparing(Map.Entry.comparingByKey()))
+                .limit(count)
+                .map(Map.Entry::getKey)
+                .collect(toList());
     }
 }
