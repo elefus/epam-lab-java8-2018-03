@@ -56,6 +56,14 @@ public class Exercise1 {
                                                         : (valu1 > value2 ? -1 : 1);
             }
         }
+        Arrays.stream(Arrays.toString(words).replaceAll(",", "").split(" "))
+              .collect(Collectors.groupingBy(String::toString, Collectors.counting()))
+              .entrySet()
+              .stream()
+              .sorted(new MyStringMapComparator())
+              .peek(stringLongEntry -> System.out.println(
+                      stringLongEntry.getKey() + " = " + stringLongEntry.getValue()))
+              .count();
 
         return Arrays.stream(Arrays.toString(words).replaceAll(",", "").split(" "))
                      .collect(Collectors.groupingBy(String::toString, Collectors.counting()))
