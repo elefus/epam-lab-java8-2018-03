@@ -3,7 +3,10 @@ package spliterators.exercise.exercise1;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,7 +32,31 @@ public class Exercise1 {
      * @param words Анализируемые слова.
      * @return Список отобранных слов (в нижнем регистре).
      */
-    private List<String> getMostPopularWords(int count, String... words) {
-        throw new UnsupportedOperationException();
+    private List<java.lang.String> getMostPopularWords(int count, java.lang.String... words) {
+
+        class MyStringMapComparator implements Comparator<Object> {
+
+            @Override
+            public int compare(Object entrySet1, Object entrySet2) {
+                java.util.Map.Entry entry1 = (java.util.Map.Entry) entrySet1;
+                java.util.Map.Entry entry2 = (java.util.Map.Entry) entrySet2;
+                Long valu1 = (Long) entry1.getValue();
+                Long value2 = (Long) entry2.getValue();
+                java.lang.String key1 = (java.lang.String) entry1.getKey();
+                java.lang.String key2 = (java.lang.String) entry2.getKey();
+
+                return Long.compare(valu1, value2) == 0 ? key1.toLowerCase().compareTo(key2.toLowerCase())
+                                                        : (valu1 > value2 ? -1 : 1);
+            }
+        }
+
+        return Arrays.stream(Arrays.toString(words).replaceAll(",", "").split(" "))
+                     .collect(Collectors.groupingBy(String::toString, Collectors.counting()))
+                     .entrySet()
+                     .stream()
+                     .sorted(new MyStringMapComparator())
+                     .limit(count)
+                     .map(Map.Entry::getKey)
+                     .collect(Collectors.toList());
     }
 }
