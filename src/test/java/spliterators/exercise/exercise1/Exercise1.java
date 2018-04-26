@@ -3,8 +3,17 @@ package spliterators.exercise.exercise1;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import static java.util.Comparator.reverseOrder;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.groupingByConcurrent;
 import static org.junit.Assert.assertEquals;
 
 public class Exercise1 {
@@ -30,6 +39,17 @@ public class Exercise1 {
      * @return Список отобранных слов (в нижнем регистре).
      */
     private List<String> getMostPopularWords(int count, String... words) {
-        throw new UnsupportedOperationException();
+        return Arrays.stream(words)
+                     .parallel()
+                     .map(String::toLowerCase)
+                     .collect(groupingByConcurrent(identity(), counting()))
+                     .entrySet()
+                     .stream()
+                     .sorted(Comparator.comparing(Map.Entry<String, Long>::getValue, reverseOrder())
+                                       .thenComparing(Map.Entry::getKey))
+                     .limit(count)
+                     .map(Map.Entry::getKey)
+                     .collect(Collectors.toList());
+
     }
 }
